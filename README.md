@@ -1,2 +1,2 @@
 # ITU-2019-Bomberman
-Projekt do předmětu ISA, varianta Bomberman
+Projekt do předmětu ITU, varianta Bomberman
