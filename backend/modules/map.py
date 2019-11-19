@@ -5,16 +5,19 @@
 # File: map.py
 # Author: Michal Krůl
 
-from backend.modules.id import ID
+from typing import List
+from modules.obstacle import Obstacle
 
 class Map:
-
+    width: int = 30
+    height: int = 20
+    
     def __init__(self, background):
-        self.ID = ID()
         self.background = background
-
-    def getIDNumber(self):
-        return ID.getIDNumber()
+        self.obstacles: List[Obstacle] = []
 
     def getBackground(self):
-        return background
+        return self.background
+
+    def getObstacles(self) -> List[Obstacle]:
+        return self.obstacles

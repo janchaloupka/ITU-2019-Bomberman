@@ -4,48 +4,52 @@
 #
 # File: player.py
 # Author: Michal Krůl
+# TODO Vyřešit powerupy
 
-from backend.modules.id import ID
-from backend.modules.character import Character
+from modules.character import Character
+from modules.position import Position
 
-class Player():
+class Player(Position):
+    def __init__(self, ID: str, nick: str):
+        Position.__init__(self, 0, 0)
 
-    def __init__(self, nick):
+        self.ID = ID
         self.nick = nick
-        self.ID = ID() #funkce na zvolení unikátního ID
-        self.life_count = 0 #
-        self.position = {None}
+        self.remainingLife = self.maxLife
+        self.position: Position = None
+        self.character: Character = None
 
-    def whoAmI(self):
-        return nick
+    def getID(self) -> str:
+        return self.ID
+
+    def getNick(self) -> str:
+        return self.nick
+
+    def setNick(self, nick: str) -> None:
+        self.nick = nick
+
+    def getRemainingLife(self) -> int:
+        return self.remainingLife
     
-    def getID(self):
-        return ID.getIDNumber()
-
-    def getLifeCount(self):
-        return life_count
-
-    def whereAmI(self):
-        return position
-
-    #Zavolá se při vybrání characteru
-    def characterChosen(self, character: Character):
-        self.speed = character.getSpeed()
-        self.power = character.getPower()
-        self.max_life_count = character.getMaxLife()
-        self.max_bomb_count = character.getMaxBombCount()
-        self.visage = character.getAppearance()
-
-    #Zavolá se jako čistící funkce pro hráče
-    def gameOver(self):
-        life_count = 0
-        position = {None}
-        speed = None
-        power = None
-        max_life_count = None
-        max_bomb_count = None
-        visage = None
-
-
-
+    def resetRemainingLife(self) -> None:
+        self.remainingLife = self.character.getMaxLife()
     
+    def getSpeed(self):
+        return self.character.getSpeed()
+
+    def getPower(self):
+        return self.character.getPower()
+
+    def getMaxLife(self):
+        return self.character.getMaxLife()
+
+    def getMaxBomb(self):
+        return self.character.getMaxBomb()
+
+    def getAppearance(self):
+        return self.character.getAppearance()
+
+    def setCharacter(self, character: Character) -> None:
+        self.character = character
+        self.resetRemainingLife()
+   

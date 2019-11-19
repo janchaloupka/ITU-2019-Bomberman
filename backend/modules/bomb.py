@@ -5,27 +5,24 @@
 # File: bomb.py
 # Author: Michal Krůl
 
-from backend.modules.game import Game
+from modules.player import Player
+from modules.position import Position
 
-class Bomb():
-
-    def __init__(self, game : Game, timer, power, position):
-        self.game = game
+class Bomb(Position):
+    def __init__(self, placedBy: Player, timer: int, power: int, x: int = 0, y: int = 0):
+        Position.__init__(self, x, y)
+        self.placedBy = placedBy
         self.timer = timer
         self.power = power
-        self.position = position
 
-    def whoOwnsMe(self):
-        return game
+    def decreaseTime(self) -> None:
+        self.timer -= 1
 
-    def getRemainingTime(self):
-        return timer
-    
-    def decreaseTime(self):
-        timer -= 1
+    def getPlacedBy(self) -> Player:
+        return self.player
 
-    def getPower(self):
-        return power
+    def getRemainingTime(self) -> int:
+        return self.timer
 
-    def whereAmI(self):
-        return position
+    def getPower(self) -> int:
+        return self.power

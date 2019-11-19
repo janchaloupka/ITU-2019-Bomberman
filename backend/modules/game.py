@@ -5,23 +5,62 @@
 # File: game.py
 # Author: Michal Krůl
 
-from backend.modules.id import ID
+from typing import List
+from modules.id import ID
+from modules.player import Player
+from modules.map import Map
+from modules.barrel import Barrel
+from modules.bomb import Bomb
 
-class Game():
-
+class Game:
     def __init__(self):
         self.ID = ID()
-        self.time_limit = 0
-        self.no_of_rounds = 0
+        self.timeLimit = 0
+        self.noOfRounds = 0
+        self.map: Map = None
+        self.players: List[Player] = []
+        self.barrels: List[Barrel] = []
+        self.bombs: List[Bomb] = []
 
-    def getID(self):
-        return ID.getIDNumber()
+    def getID(self) -> ID:
+        return self.ID.getID()
 
-    def setTimeLimit(self, time_limit):
-        self.time_limit = time_limit
+    def getTimeLimit(self) -> int:
+        return self.timeLimit
+    
+    def setTimeLimit(self, timeLimit) -> None:
+        self.timeLimit = timeLimit
 
-    def getTimeLimit(self):
-        return time_limit
+    def getNoOfRounds(self) -> int:
+        return self.noOfRounds
 
-    def setNoOfRounds(self, no_of_rounds):
-        self.no_of_rounds = no_of_rounds
+    def setNoOfRounds(self, no_of_rounds: int) -> None:
+        self.noOfRounds = noOfRounds
+    
+    def getPlayers(self) -> List[Player]:
+        return self.players
+    
+    def addPlayer(self, player: Player) -> None:
+        if player in self.players:
+            raise Exception("Player is already in the game")
+
+        if len(self.players) >= 4:
+            raise Exception("Maximum number of players exceeded")
+
+        self.players.append(player)
+    
+    def removePlayer(self, player: Player) -> None:
+        self.players.remove(player)
+
+    def getMap(self) -> Map:
+        return self.map
+    
+    def setMap(self, map : Map) -> None:
+        # TODO generace barelů
+        self.map = map
+    
+    def getBarrels(self) -> List[Barrel]:
+        return self.barrels
+    
+    def getBombs(self) -> List[Bomb]:
+        return self.bombs

@@ -6,14 +6,30 @@
 # Author: Michal Krůl
 
 import random
+from typing import List
+
 
 class ID:
+    # Seznam všech aktivních ID
+    pool: List[int] = []
 
     def __init__(self):
-        self.number = getNumber()
+        self.number = self.getNumber()
 
-    def getNumber(self):
-        return random() #asi nee, je potřeba vyřešit přidělování ID
+    # Uvolnění ID při zničení objektu klíčovým slovem del
+    def __del__(self):
+        self.pool.remove(self.getIDNumber())
 
-    def getIDNumber(self):
-        return number
+    def getNumber(self) -> int: 
+        randId = 0
+        
+        while randId in self.pool or randId < 1:
+            randId = random.randint(1, 999999)
+
+        self.pool.append(randId)
+        
+        return randId
+
+    def getID(self) -> int:
+        return self.number
+

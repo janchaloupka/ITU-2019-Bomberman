@@ -6,29 +6,24 @@
 # Author: Michal Krůl
 
 class Character:
-
-    def __init__(self, speed, power, max_life, max_bomb_count, appearance, ID):
-        self.ID = ID
+    def __init__(self, speed: int, power: int, maxLife: int, maxBomb: int, appearance):
         self.speed = speed
         self.power = power
-        self.max_life = max_life
-        self.max_bomb_count = max_bomb_count
+        self.maxLife = maxLife
+        self.maxBomb = maxBomb
         self.appearance = appearance
 
-    def getID(self):
-        return ID
-
     def getSpeed(self):
-        return speed
+        return self.speed
 
     def getPower(self):
-        return power
+        return self.power
 
     def getMaxLife(self):
-        return max_life
+        return self.maxLife
 
-    def getMaxBombCount(self):
-        return max_bomb_count
+    def getMaxBomb(self):
+        return self.maxBomb
 
     def getAppearance(self):
-        return appearance
+        return self.appearance
