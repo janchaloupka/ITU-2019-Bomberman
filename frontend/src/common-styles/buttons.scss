@@ -1,0 +1,31 @@
+button, .Button{
+  font: inherit;
+  height: 48px;
+  min-width: 120px;
+  padding: 0 24px;
+  margin: 8px;
+  border: 2px solid black;
+  background: black;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+
+  &.Secondary{
+    background: none;
+    color: black;
+    border-color: black;
+  }
+
+  &:hover{
+    outline: 1px solid black;
+  }
+
+  &:active{
+    transform: scale(0.95);
+    box-shadow: none;
+  }
+}

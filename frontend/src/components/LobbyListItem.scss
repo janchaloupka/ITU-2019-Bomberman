@@ -1,0 +1,41 @@
+.LobbyListItem{
+  cursor: pointer;
+  background: white;
+  color: black;
+  border: 3px solid currentColor;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  max-width: 800px;
+  width: 100%;
+  padding: 0 48px;
+  margin: 8px;
+  text-decoration: none;
+
+  &:active{
+    transform: scale(0.99);
+    box-shadow: none;
+  }
+
+  .Host{
+    font-size: 24px;
+  }
+
+  .Map{
+    margin-left: 32px;
+    font-size: 20px;
+    opacity: 0.8;
+  }
+
+  .Connected{
+    margin-left: auto;
+    font-weight: 700;
+    font-size: 28px;
+
+    &:after{
+      content: ' / 4';
+      font-size: 18px;
+    }
+  }
+}

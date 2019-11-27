@@ -1,0 +1,11 @@
+.MainPage{
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  p{
+    margin-bottom: 48px;
+  }
+}
