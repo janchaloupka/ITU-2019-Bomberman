@@ -10,6 +10,7 @@ from backend.modules.id import ID
 from backend.modules.game import Game
 from backend.modules.map import Map
 from backend.modules.character import Characters
+from backend.modules.map import mockMap
 #from backend.server.my_server_protocol import MyServerProtocol
 
 
@@ -89,6 +90,12 @@ def setPlayerCharacter(conn, data):
         if (ch == char):
             player.setCharacter(Characters[ch])
 
+def changeGameMap(data):
+    '''Nastavi mapu ke hre'''
+    game = Games[data['Game']]
+    map = data['Map']
+    game.setMap(map)
+
 def processMessage(connection, obj):
     '''Process message'''
 
@@ -136,14 +143,18 @@ def processMessage(connection, obj):
             return response
 
     elif (obj['Type'] == "ChangeCharacter"):
-        '''Zavola pridani postavy k hraci, vraci PlayerCharacter odpoved'''
+        '''Zavola pridani postavy k hraci, vraci PlayerCharacter odpoved
+        ocekava {Type : "ChangeCharacter", Data : {Character : Name}}'''
         setPlayerCharacter(connection, obj['Data'])
         response = {}
         response['Type'] = "PlayerCharacter"
         return response
 
     elif (obj['Type'] == "ChangeMap"):
-        pass
+        '''Zavola zmenu mapy
+        ocekava: {Type : "ChangeMap", Data : {Game : GameId, Map : MapName}}'''
+        changeGameMap(obj['Data'])
+
     elif (obj['Type'] == "LeaveLobby"):
         pass
     elif (obj['Type'] == "StartGame"):

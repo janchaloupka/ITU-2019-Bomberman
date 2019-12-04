@@ -25,3 +25,10 @@ class Map:
 
     def getName(self) -> str:
         return self.name
+
+
+mockMap = {
+    "Map1" : Map (None, "Map1"),
+    "Map2" : Map (None, "Map2"),
+    "Map3" : Map (None, "Map3")
+}
