@@ -5,7 +5,7 @@
 # File: obstacle.py
 # Author: Michal Krůl
 
-from modules.position import Position
+from backend.modules.position import Position
 
 class Obstacle(Position):
     def __init__(self, x: int = 0, y: int = 0):

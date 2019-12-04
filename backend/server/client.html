@@ -29,9 +29,17 @@
                isopen = false;
             }
          };
-         function sendText() {
+         function createLobby() {
             if (isopen) {
-               socket.send(JSON.stringify(new Number(3)));
+               socket.send(JSON.stringify({Type: "CreateLobby"}));
+               console.log("Text message sent.");               
+            } else {
+               console.log("Connection not opened.")
+            }
+         };
+         function updateLobby() {
+            if (isopen) {
+               socket.send(JSON.stringify({Type: "UpdateLobbySettings", Data: { ID: 12345, TimeLimit: 60, NumberOfRounds : 3}}));
                console.log("Text message sent.");               
             } else {
                console.log("Connection not opened.")
@@ -52,7 +60,8 @@
    </head>
    <body>
       <p>Open your browser's JavaScript console to see what's happening (hit F12).</p>
-      <button onclick='sendText();'>Send Text Message</button>
+      <button onclick='createLobby();'>CreateLobby</button>
+      <button onclick='updateLobby();'>UpdateLobby</button>
       <button onclick='sendBinary();'>Send Binary Message</button>
    </body>
 </html>
