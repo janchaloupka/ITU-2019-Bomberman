@@ -56,6 +56,29 @@ def updateGame(data):
 
     return "OK"
 
+def addToLobby(player, data):
+    '''Prida hrace do hry, pokud je ID hry ve zprave a pokud hra neni plna, odesila zpravu LobbyJoin s informacemi stejne jako LobbyCreate'''
+    if (data['ID'] is None):
+        return "No Game ID send"
+    else:
+        game = Games[data['ID']]
+        if (len(game.players) == 4):
+            return "Game full"
+        else:
+            game.addPlayer(Connections[player])
+    
+    response = {}
+    response['Type'] = "LobbyJoin"
+    players = {}
+    x = 1
+    for p in game.getPlayers():
+        i = p.getID()
+        players[x] = i
+        x += 1
+    data = {"NumberOfRounds" : game.getNoOfRounds(), "TimeLimit" : game.getTimeLimit, "Players" : players}
+    response['Data'] = data
+    return response
+
 def processMessage(connection, obj):
     '''Process message'''
     print(obj['Type'])
@@ -66,7 +89,16 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "UnsubscribeLobbyList"):
         pass
     elif (obj['Type'] == "JoinLobby"):
-        pass
+        '''Zavola pridani hrace o lobby, pokud je odpoved chybova hlaska odesle LobbyLeave zpravu'''
+        response = addToLobby(connection, obj['Data'])
+        if (type(response) != str):
+            bad_response = {}
+            bad_response['Type'] = "LobbyLeave"
+            bad_response['Data'] = response
+            return bad_response
+        else:
+            return response
+
     elif (obj['Type'] == "CreateLobby"):
         '''Zavola funkci vytvoreni hry, vytvori response typu s daty ID, timeLimit a Players
         Vraci: {"Type": "LobbyJoin", "Data": {"NumberOfRounds": noOfRounds, "TimeLimit": timeLimit, "Players": {"1": PlayerID}}}'''
@@ -81,7 +113,6 @@ def processMessage(connection, obj):
             x += 1
         data = {"NumberOfRounds" : 0, "TimeLimit" : 0, "Players" : players}
         response['Data'] = data    
-        print(response)    
         return response
 
     elif (obj['Type'] == "UpdateLobbySettings"):
@@ -115,5 +146,13 @@ def notifyGameMembers(gameID):
             #TODO posle to i vlastnikovi, nutno pridat vlastnika do game
             message = {}
             message['Type'] = "LobbyUpdate"
+            players = {}
+            x = 1
+            for p in Games[gameID].getPlayers():
+                i = p.getID()
+                players[x] = i
+                x += 1
+            data = {"NumberOfRounds" : Games[gameID].getNoOfRounds(), "TimeLimit" : Games[gameID].getTimeLimit, "Players" : players}
+            message['Data'] = data
             #notify neozkouseno!!!!
             conn.notify(message)
