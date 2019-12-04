@@ -66,6 +66,9 @@ class Game:
     def getBombs(self) -> List[Bomb]:
         return self.bombs
 
+    def getIsLobby(self) -> bool:
+        return self.isLobby
+
     def start(self):
         self.isLobby = False
         generateBarrels()

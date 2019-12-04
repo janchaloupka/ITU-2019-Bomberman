@@ -11,6 +11,7 @@ from backend.modules.game import Game
 from backend.modules.map import Map
 from backend.modules.character import Characters
 from backend.modules.map import mockMap
+from backend.modules.bomb import Bomb
 #from backend.server.my_server_protocol import MyServerProtocol
 
 
@@ -202,9 +203,11 @@ def processMessage(connection, obj):
             }
         }
         return response
-        
+
     elif (obj['Type'] == "PlaceBomb"):
-        pass
+        '''ZAhaji pokladani bomby
+        ocekava: {Type : "PlaceBomb"} '''
+        return placeBomb(connection)
     else:
         return {'Type' : "BadFuckingRequest"}
 
@@ -260,3 +263,12 @@ def move(conn, data):
     else:
         return "Invalid"
     return "OK"
+
+def placeBomb(conn):
+    player = Connections(conn)
+    #musime vyresit nejakej base
+    bomb = Bomb(player, 3, 4 + player.getPower(), player.getPosition().getX(), player.getPosition().getX())
+    for g in Games():
+        if not g.getIsLobby():
+            g.getBombs().append(bomb)
+    return {'Type' : "BombPlace"}
