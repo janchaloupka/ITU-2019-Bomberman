@@ -65,3 +65,14 @@ class Game:
     
     def getBombs(self) -> List[Bomb]:
         return self.bombs
+
+    def start(self):
+        self.isLobby = False
+        generateBarrels()
+        generatePlayerPositions()
+
+    def generateBarrels(self):
+        pass
+
+    def generatePlayerPositions(self):
+        pass

@@ -58,6 +58,19 @@ def updateGame(data):
 
     return "OK"
 
+def startGame(data):
+    '''Zmeni stav z JeVLobby na HrajeSe, vygeneruje barelly a pozice'''
+    game = Games[data['Game']]
+
+    #Tohle bude ta fuska, nic to nedela a ma to udelat vsechno, TODO
+    game.start()
+
+    response = {
+        'Type' : "GameStart" 
+    }
+    return response
+
+
 def addToLobby(player, data):
     '''Prida hrace do hry, pokud je ID hry ve zprave a pokud hra neni plna, odesila zpravu LobbyJoin s informacemi stejne jako LobbyCreate'''
     if (data['ID'] is None):
@@ -95,6 +108,18 @@ def changeGameMap(data):
     game = Games[data['Game']]
     map = data['Map']
     game.setMap(map)
+
+def removePlayerFromGame(conn):
+    '''Odstrani hrace z hry, upozorni ostatni hrace'''
+    player = Connections[conn]
+    for g in Games:
+        if player in g.getPlayers:
+            g.removePlayer(player)
+            notifyAboutPlayer(g.getID(), player.getID(), "PlayerLeave")
+            
+def subscribeToLobyList():
+    '''TODO'''
+    pass
 
 def processMessage(connection, obj):
     '''Process message'''
@@ -156,9 +181,16 @@ def processMessage(connection, obj):
         changeGameMap(obj['Data'])
 
     elif (obj['Type'] == "LeaveLobby"):
-        pass
+        '''Zavola odstraneni hrace z hry a opet se prihlasi k odebirani lobby listu
+        ocekava ocekava: {Type : "LeaveLobby"}'''
+        removePlayerFromGame(connection)
+        subscribeToLobyList()
+    
     elif (obj['Type'] == "StartGame"):
-        pass
+        '''Spusti spousteni hry
+        ocekava ocekava ocekava: {Type : "LeaveLobby", Data : { Game : gameID}'''
+        return startGame(obj['data'])
+
     elif (obj['Type'] == "Move"):
         pass
     elif (obj['Type'] == "PlaceBomb"):
