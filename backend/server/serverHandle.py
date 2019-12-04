@@ -9,6 +9,7 @@ from backend.modules.player import Player
 from backend.modules.id import ID
 from backend.modules.game import Game
 from backend.modules.map import Map
+from backend.modules.character import Characters
 #from backend.server.my_server_protocol import MyServerProtocol
 
 
@@ -77,13 +78,23 @@ def addToLobby(player, data):
         x += 1
     data = {"NumberOfRounds" : game.getNoOfRounds(), "TimeLimit" : game.getTimeLimit, "Players" : players}
     response['Data'] = data
+    notifyAboutPlayer(game.getID(), Connections[player].getID(), "PlayerJoin")
     return response
+
+def setPlayerCharacter(conn, data):
+    '''Pokud najde jmeno postavy ve vytvorenych postavach, prida tuto postavu k hraci'''
+    player = Connections[conn]
+    char = data ['Name']
+    for ch in Characters.keys():
+        if (ch == char):
+            player.setCharacter(Characters[ch])
 
 def processMessage(connection, obj):
     '''Process message'''
-    print(obj['Type'])
+
     if (obj['Type'] == "ChangeName"):
         Connections[connection].setNick(obj.Data.Name)
+
     elif (obj['Type'] == "SubscribeLobbyList"):
         pass
     elif (obj['Type'] == "UnsubscribeLobbyList"):
@@ -125,7 +136,12 @@ def processMessage(connection, obj):
             return response
 
     elif (obj['Type'] == "ChangeCharacter"):
-        pass
+        '''Zavola pridani postavy k hraci, vraci PlayerCharacter odpoved'''
+        setPlayerCharacter(connection, obj['Data'])
+        response = {}
+        response['Type'] = "PlayerCharacter"
+        return response
+
     elif (obj['Type'] == "ChangeMap"):
         pass
     elif (obj['Type'] == "LeaveLobby"):
@@ -153,6 +169,17 @@ def notifyGameMembers(gameID):
                 players[x] = i
                 x += 1
             data = {"NumberOfRounds" : Games[gameID].getNoOfRounds(), "TimeLimit" : Games[gameID].getTimeLimit, "Players" : players}
+            message['Data'] = data
+            #notify neozkouseno!!!!
+            conn.notify(message)
+
+def notifyAboutPlayer(gameId, playerID, event_type):
+    for conn in Connections.keys():
+        if (Connections[conn] in Games[gameId].players):
+            #TODO posle to i vlastnikovi, nutno pridat vlastnika do game
+            message = {}
+            message['Type'] = event_type
+            data = {"Player" : playerID}
             message['Data'] = data
             #notify neozkouseno!!!!
             conn.notify(message)
