@@ -1,0 +1,24 @@
+.SafeArea, .ScreenContent{
+  max-width: 1216px;
+  max-height: 800px;
+}
+
+.ScreenContent{
+  background: white;
+  margin: auto;
+  padding: 24px;
+  box-shadow: 8px 8px 0 rgba(#000000, 0.2);
+}
+
+/*.Sprite{
+  background-image: url("../assets/sprites.png");
+  background-size: 512px 512px;
+  image-rendering: pixelated;
+}*/
+
+@media(max-width: 1300px), (max-height: 900px){
+  .SafeArea, .ScreenContent{
+    max-width: 912px;
+    max-height: 600px;
+  }
+}

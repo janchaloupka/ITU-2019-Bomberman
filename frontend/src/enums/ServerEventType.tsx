@@ -50,7 +50,7 @@ export enum ServerEventType{
    */
   GameEnd = "GameEnd",
 
-  // TODO Informace o vrácení zpráky do lobby po konci hry
+  // TODO Informace o vrácení zpátky do lobby po konci hry
 
   /**
    * Změna postavy hráče

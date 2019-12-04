@@ -1,3 +1,27 @@
 .PlayerAvatar{
-  // TODO
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+
+  .Avatar{
+    width: 128px;
+    height: 128px;
+    background-image: url('../assets/sprites.png');
+    background-size: 512px 512px;
+    image-rendering: pixelated;
+    background-position: 0 256px;
+    transform: scale(1.25);
+    margin: 16px;
+  }
+
+  @media(max-width: 1300px), (max-height: 900px){
+    .Avatar{
+      transform: none;
+      margin: 0;
+    }
+  }
+
+  .Name{
+
+  }
 }

@@ -12,14 +12,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-#root{
-  min-height: 100vh;
-  display: flex;
-  & > *{
-    flex-grow: 1;
-  }
-}
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -28,3 +20,4 @@ code {
 @import "common-styles/typography";
 @import "common-styles/buttons";
 @import "common-styles/inputs";
+@import "common-styles/blocks";

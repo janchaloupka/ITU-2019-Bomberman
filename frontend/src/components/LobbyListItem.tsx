@@ -15,7 +15,7 @@ class LobbyListItem extends React.Component<LobbyListItemProps>{
     <Link to={"/game/" + this.props.id} className="LobbyListItem">
       <div className="Host">{this.props.host}</div>
       <div className="Map">{this.props.map}</div>
-      <div className="Connected">{this.props.connected}</div>
+      {this.props.connected != null && (<div className="Connected">{this.props.connected}</div>) }
     </Link>)
   }
 }
