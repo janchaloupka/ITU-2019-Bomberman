@@ -70,7 +70,6 @@ def startGame(data):
     }
     return response
 
-
 def addToLobby(player, data):
     '''Prida hrace do hry, pokud je ID hry ve zprave a pokud hra neni plna, odesila zpravu LobbyJoin s informacemi stejne jako LobbyCreate'''
     if (data['ID'] is None):
@@ -188,11 +187,22 @@ def processMessage(connection, obj):
     
     elif (obj['Type'] == "StartGame"):
         '''Spusti spousteni hry
-        ocekava ocekava ocekava: {Type : "LeaveLobby", Data : { Game : gameID}'''
+        ocekava : {Type : "LeaveLobby", Data : { Game : gameID}'''
         return startGame(obj['data'])
 
     elif (obj['Type'] == "Move"):
-        pass
+        '''Zavola pohyb
+        ocekava {Type : "Move", Data : { Direction : "U/D/L/R"} (Up/Down/Left/Right)'''
+        ret = move(connection, obj['Data'])
+        response = {
+            'Type' : "MapObjectMove",
+            'Data' : {
+                'Status' : ret,
+                'Object' : "Player"
+            }
+        }
+        return response
+        
     elif (obj['Type'] == "PlaceBomb"):
         pass
     else:
@@ -226,3 +236,27 @@ def notifyAboutPlayer(gameId, playerID, event_type):
             message['Data'] = data
             #notify neozkouseno!!!!
             conn.notify(message)
+
+def move(conn, data):
+    '''
+    Updatuje position hrace
+    Predpoklada se nasledujici sit
+    ..|x0|x1|x2
+    y0|__|__|__
+    y1|__|__|__
+    y3|__|__|__
+    '''
+
+    player = Connections[conn]
+    direction = data['Direction']
+    if (direction == "U"):
+        player.position.setY(player.position.getY - 1) 
+    elif (direction == "D"):
+        player.position.setY(player.position.getY + 1)
+    elif (direction == "L"):
+        player.position.setX(player.position.getX - 1)
+    elif (direction == "R"):
+        player.position.setX(player.position.getX + 1)
+    else:
+        return "Invalid"
+    return "OK"
