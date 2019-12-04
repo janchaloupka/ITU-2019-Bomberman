@@ -3,7 +3,7 @@
 # ITU projekt: hra Bomberman
 #
 # File: game.py
-# Author: Michal Krůl
+# Author: Michal Krůl, Jan Chaloupka
 
 from typing import List
 from modules.id import ID

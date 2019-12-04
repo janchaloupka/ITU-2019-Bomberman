@@ -6,8 +6,8 @@
 # Author: Michal Krůl
 # TODO Vyřešit powerupy
 
-from modules.character import Character
-from modules.position import Position
+from backend.modules.character import Character
+from backend.modules.position import Position
 
 class Player(Position):
     def __init__(self, ID: str, nick: str):
@@ -15,7 +15,7 @@ class Player(Position):
 
         self.ID = ID
         self.nick = nick
-        self.remainingLife = self.maxLife
+        self.remainingLife = 0
         self.position: Position = None
         self.character: Character = None
 
