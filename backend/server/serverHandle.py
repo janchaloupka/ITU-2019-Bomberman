@@ -125,14 +125,18 @@ def processMessage(connection, obj):
     '''Process message'''
 
     if (obj['Type'] == "ChangeName"):
-        Connections[connection].setNick(obj.Data.Name)
+        '''Zmeni Nick hrace
+        ocekava {Type : "ChangeName", Data : { Nick : nickname}'''
+        data = obj['Data']
+        Connections[connection].setNick(data['Nick'])
 
     elif (obj['Type'] == "SubscribeLobbyList"):
         pass
     elif (obj['Type'] == "UnsubscribeLobbyList"):
         pass
     elif (obj['Type'] == "JoinLobby"):
-        '''Zavola pridani hrace o lobby, pokud je odpoved chybova hlaska odesle LobbyLeave zpravu'''
+        '''Zavola pridani hrace o lobby, pokud je odpoved chybova hlaska odesle LobbyLeave zpravu
+        ocekava {Type : "ChangeName", Data : { ID : gameID}'''
         response = addToLobby(connection, obj['Data'])
         if (type(response) != str):
             bad_response = {}
@@ -144,6 +148,7 @@ def processMessage(connection, obj):
 
     elif (obj['Type'] == "CreateLobby"):
         '''Zavola funkci vytvoreni hry, vytvori response typu s daty ID, timeLimit a Players
+        ocekava {Type : "CreateLobby"}
         Vraci: {"Type": "LobbyJoin", "Data": {"NumberOfRounds": noOfRounds, "TimeLimit": timeLimit, "Players": {"1": PlayerID}}}'''
         game = createGame(connection)
         response = {}
@@ -159,7 +164,8 @@ def processMessage(connection, obj):
         return response
 
     elif (obj['Type'] == "UpdateLobbySettings"):
-        '''Zavola update hry, pokud probehne v poradku nic nevraci, jinak vraci {Type: "Lobby update", Data : "Error string"}'''
+        '''Zavola update hry, pokud probehne v poradku nic nevraci, jinak vraci {Type: "Lobby update", Data : "Error string"}
+        ocekava {Type : "UpdateLobbySettings", Data : { ID : gameId, ['TimeLimit' : timelimit, 'NumberOfRounds' : noofrounds]}'''
         ret = updateGame(obj['Data'])
         if (ret != "OK"):
             response = {}
@@ -208,6 +214,7 @@ def processMessage(connection, obj):
         '''ZAhaji pokladani bomby
         ocekava: {Type : "PlaceBomb"} '''
         return placeBomb(connection)
+    
     else:
         return {'Type' : "BadFuckingRequest"}
 
