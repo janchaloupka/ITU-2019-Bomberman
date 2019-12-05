@@ -18,7 +18,7 @@ class ID:
 
     # Uvolnění ID při zničení objektu klíčovým slovem del
     def __del__(self):
-        self.pool.remove(self.getIDNumber())
+        self.pool.remove(self.getID())
 
     def getNumber(self) -> int: 
         randId = 0

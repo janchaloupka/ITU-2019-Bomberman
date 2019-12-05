@@ -3,18 +3,19 @@
 # ITU projekt: hra Bomberman
 #
 # File: game.py
-# Author: Michal Krůl
+# Author: Michal Krůl, Jan Chaloupka
 
 from typing import List
-from modules.id import ID
-from modules.player import Player
-from modules.map import Map
-from modules.barrel import Barrel
-from modules.bomb import Bomb
+from backend.modules.id import ID
+from backend.modules.player import Player
+from backend.modules.map import Map
+from backend.modules.barrel import Barrel
+from backend.modules.bomb import Bomb
 
 class Game:
     def __init__(self):
         self.ID = ID()
+        self.isLobby = True
         self.timeLimit = 0
         self.noOfRounds = 0
         self.map: Map = None
@@ -22,7 +23,7 @@ class Game:
         self.barrels: List[Barrel] = []
         self.bombs: List[Bomb] = []
 
-    def getID(self) -> ID:
+    def getID(self) -> int:
         return self.ID.getID()
 
     def getTimeLimit(self) -> int:
@@ -64,3 +65,17 @@ class Game:
     
     def getBombs(self) -> List[Bomb]:
         return self.bombs
+
+    def getIsLobby(self) -> bool:
+        return self.isLobby
+
+    def start(self):
+        self.isLobby = False
+        generateBarrels()
+        generatePlayerPositions()
+
+    def generateBarrels(self):
+        pass
+
+    def generatePlayerPositions(self):
+        pass

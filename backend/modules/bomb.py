@@ -5,8 +5,8 @@
 # File: bomb.py
 # Author: Michal Krůl
 
-from modules.player import Player
-from modules.position import Position
+from backend.modules.player import Player
+from backend.modules.position import Position
 
 class Bomb(Position):
     def __init__(self, placedBy: Player, timer: int, power: int, x: int = 0, y: int = 0):
