@@ -2,6 +2,7 @@ import React from "react";
 import './Lobby.scss';
 import PlayerAvatar from "../components/PlayerAvatar";
 
+//TODO tlacitko zpet odkazujici na seznam mistnosti
 class Lobby extends React.Component{
   render(){
     return (

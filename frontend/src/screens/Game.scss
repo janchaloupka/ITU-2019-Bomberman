@@ -1,0 +1,33 @@
+.Game{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  .ScreenContent{
+    display: grid;
+    grid-template-columns: max-content auto;
+    grid-template-rows: auto max-content max-content;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/mapMockup.jpg');
+    position: relative;
+  }
+}
+
+.Map {
+  
+  object-fit: fill;
+  width: 100%;
+  padding-top: 75%; /* 4:3 Aspect Ratio */
+}
+
+.Bar {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 15%;
+  background-color: azure; 
+}
