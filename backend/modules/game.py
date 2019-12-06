@@ -5,6 +5,7 @@
 # File: game.py
 # Author: Michal Krůl, Jan Chaloupka
 
+import random
 from typing import List
 from backend.modules.id import ID
 from backend.modules.player import Player
@@ -56,9 +57,8 @@ class Game:
     def getMap(self) -> Map:
         return self.map
     
-    def setMap(self, map : Map) -> None:
-        # TODO generace barelů
-        self.map = map
+    def setMap(self, mapa : Map) -> None:
+        self.map = mapa
     
     def getBarrels(self) -> List[Barrel]:
         return self.barrels
@@ -70,12 +70,59 @@ class Game:
         return self.isLobby
 
     def start(self):
+        '''
+        Predpoklada se nasledujici sit
+        ..|x0|x1|x2
+        y0|__|__|__
+        y1|__|__|__
+        y2|__|__|__
+        '''
         self.isLobby = False
+        self.map.generateObstacles()
+        obstacles = self.map.getObstacles()
         generateBarrels()
         generatePlayerPositions()
+        return obstacles, self.barrels
 
     def generateBarrels(self):
-        pass
+        if (self.map.getName == "Map1"):
+            #Zatim nenahodna generace barellu
+            #Rady
+            for y in range(2, self.map.height - 2, 2):
+                for x in range(0, self.map.width):
+                    self.barrels.append(Barrel(x, y))
+            
+            #Sloupce (pozor na duplicitu!)
+            for x in range (2, self.map.width, 2):
+                for y in range (1, self.map.height, 2):
+                    self.barrels.append(Barrel(x, y))
+
+            #Kraje
+            for x in range(2, self.map.width - 2):
+                self.barrels.append(Barrel(x, 0))
+                self.barrels.append(Barrel(x, self.map.height - 1))
+
+            for y in range(3, self.map.height - 3, 2):
+                self.barrels.append(Barrel(0, y))
+                self.barrels.append(Barrel(self.map.width - 1, y))
+
 
     def generatePlayerPositions(self):
-        pass
+        x = 1
+        for p in Player:
+            if x == 1:
+                Player.position.setX(0)
+                Player.position.setY(0)
+                x += 1
+            if x == 2:
+                Player.position.setX(self.map.width - 1)
+                Player.position.setY(0)
+                x += 1
+            if x == 3:
+                Player.position.setX(0)
+                Player.position.setY(self.map.height - 1)
+                x += 1
+            if x == 4:
+                Player.position.setX(self.map.width - 1)
+                Player.position.setY(self.map.height - 1)
+                x += 1

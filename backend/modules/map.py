@@ -9,13 +9,24 @@ from typing import List
 from backend.modules.obstacle import Obstacle
 
 class Map:
-    width: int = 30
-    height: int = 20
+    width: int = 21
+    height: int = 21
     
     def __init__(self, background, name):
         self.background = background
         self.obstacles: List[Obstacle] = []
         self.name = name
+
+    def generateObstacles(self):
+        '''Dle typu mapy vytvori prekazky'''
+        if (self.name == "Map1"):
+            for x in range(1, self.width ,2):
+                for y in range(1, self.height, 2):
+                    self.obstacles.append(Obstacle(x, y))
+        if (self.name == "Map2"):
+            pass
+        if (self.name == "Map3"):
+            pass
 
     def getBackground(self):
         return self.background

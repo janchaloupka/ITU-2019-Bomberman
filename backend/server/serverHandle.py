@@ -63,11 +63,42 @@ def startGame(data):
     '''Zmeni stav z JeVLobby na HrajeSe, vygeneruje barelly a pozice'''
     game = Games[data['Game']]
 
-    #Tohle bude ta fuska, nic to nedela a ma to udelat vsechno, TODO
-    game.start()
+    #Uz to dela vsechno
+    obstacles, barrels = game.start()
+
+    objects = {}
+
+    x = 0
+
+    for o in obstacles:
+        objects[x] = {
+            'Type' : 'Obstacle',
+            'Collision' : True,
+            'Destroyable' : False,
+            'Background' : False,
+            'PosX' : o.getPosition.getX(),
+            'PosY' : o.getPosition.getY()
+        }
+        x += 1 
+
+    for b in barrels:
+        objects[x] = {
+            'Type' : 'Barrel',
+            'Collision' : True,
+            'Destroyable' : True,
+            'Background' : False,
+            'PosX' : b.getPosition.getX(),
+            'PosY' : b.getPosition.getY()
+        }
+        x += 1
+
+    data = {
+        'MapObject' : objects
+    }
 
     response = {
-        'Type' : "GameStart" 
+        'Type' : "GameStart",
+        'Data' : data
     }
     return response
 
@@ -194,7 +225,7 @@ def processMessage(connection, obj):
     
     elif (obj['Type'] == "StartGame"):
         '''Spusti spousteni hry
-        ocekava : {Type : "LeaveLobby", Data : { Game : gameID}'''
+        ocekava : {Type : "StartGame", Data : { Game : gameID}'''
         return startGame(obj['data'])
 
     elif (obj['Type'] == "Move"):
