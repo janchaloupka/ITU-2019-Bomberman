@@ -12,6 +12,8 @@ from backend.modules.map import Map
 from backend.modules.character import Characters
 from backend.modules.map import mockMap
 from backend.modules.bomb import Bomb
+from ObservableList import ObservableList
+from Observer import Observer
 #from backend.server.my_server_protocol import MyServerProtocol
 
 
@@ -20,7 +22,15 @@ from backend.modules.bomb import Bomb
 Connections = {}
 Players = {}
 Games = {}
-Lobby = []
+Lobby = ObservableList()
+observer = Observer()
+
+def handler(event):
+    notifySubscribed()
+
+Lobby.register_observer(observer())
+
+Observer()
 
 def createPlayer(obj):
     '''Vytvori noveho hrace a prida ho do seznamu vsech pripojenych hracu, indentifikace pomoci WebsocketServerHandle'''
@@ -62,6 +72,11 @@ def updateGame(data):
 def startGame(data):
     '''Zmeni stav z JeVLobby na HrajeSe, vygeneruje barelly a pozice'''
     game = Games[data['Game']]
+
+    for g in Games:
+        if not g.getIsLobby():
+            del Games[g]
+            Lobby.remove(g)
 
     #Uz to dela vsechno
     obstacles, barrels = game.start()
@@ -277,6 +292,9 @@ def notifyAboutPlayer(gameId, playerID, event_type):
             message['Data'] = data
             #notify neozkouseno!!!!
             conn.notify(message)
+
+def notifySubscribed():
+    pass
 
 def move(conn, data):
     '''
