@@ -309,4 +309,5 @@ def placeBomb(conn):
     for g in Games():
         if not g.getIsLobby():
             g.getBombs().append(bomb)
+    
     return {'Type' : "BombPlace"}
