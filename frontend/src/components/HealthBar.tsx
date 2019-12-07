@@ -6,8 +6,6 @@ interface HealthBarProps{
   heart2: string;
   heart3: string;
 }
-//<HealthBar heart1="../assets/mapMockup.png" heart2="../assets/red_heart.png" heart3="../assets/red_heart.png"/>
-
 
 class HealthBar extends React.Component<HealthBarProps>{
   render(){

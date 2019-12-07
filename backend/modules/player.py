@@ -52,4 +52,7 @@ class Player(Position):
     def setCharacter(self, character: Character) -> None:
         self.character = character
         self.resetRemainingLife()
+
+    def getPosition(self) -> Position:
+        return self.position
    
