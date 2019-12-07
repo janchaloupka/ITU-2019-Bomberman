@@ -1,0 +1,17 @@
+.Bomb_container{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto;
+    align-items: center;
+    justify-items: center;
+
+
+    .Bomb{
+        image-rendering: pixelated;
+        background-image: url("../assets/bomb.png");
+        width: 128px;
+        height: 128px;
+        background-size: 100%;
+        margin-right: 10px;
+    }
+}

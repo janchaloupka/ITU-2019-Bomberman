@@ -17,7 +17,7 @@ class Bomb extends React.Component<BombProps>{
 
   render(){
     return (
-        <div className="Bomb_container">
+        <div >
             {this.renderBombs()}
         </div>
     );
