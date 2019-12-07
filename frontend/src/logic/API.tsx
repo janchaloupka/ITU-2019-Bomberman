@@ -2,17 +2,13 @@ import { ServerEvent } from "../models/ServerEvent";
 import { ServerEventType } from "../enums/ServerEventType";
 import { ClientEvent } from "../models/ClientEvent";
 
-export interface ServerEventObserver{
-  NewMessage(data: ServerEvent): void;
-}
-
 class ServerCommunication{
   private Socket: WebSocket;
-  private Observers: Map<ServerEventType, ServerEventObserver[]>;
+  private Observers: Map<ServerEventType, ((data: any) => void)[]>;
   private OnOpenObservers: (() => void)[] = [];
 
   constructor(serverUrl: string){
-    this.Observers = new Map<ServerEventType, ServerEventObserver[]>();
+    this.Observers = new Map<ServerEventType, ((data: any) => void)[]>();
 
     this.Socket = new WebSocket(serverUrl);
     this.Socket.onopen = () => this.Open();
@@ -48,7 +44,7 @@ class ServerCommunication{
     this.NotifySubscribers(event);
   }
 
-  public OnOpen(callback: () => void){
+  public Connected(callback: () => void){
     this.OnOpenObservers.push(callback);
   }
 
@@ -70,11 +66,11 @@ class ServerCommunication{
     if(!array) return;
 
     for (const o of array) {
-      o.NewMessage(data);
+      o(data.Data);
     }
   }
 
-  public Subscribe(type: ServerEventType, observer: ServerEventObserver): void{
+  public Subscribe(type: ServerEventType, observer: ((data: any) => void)): void{
     if(!this.Observers.has(type))
       this.Observers.set(type, []);
 
@@ -82,19 +78,19 @@ class ServerCommunication{
     if(observers) observers.push(observer);
   }
 
-  public Unsubscribe(type: ServerEventType, observer: ServerEventObserver): void{
+  public Unsubscribe(type: ServerEventType, observer: ((data: any) => void)): void{
     const array = this.Observers.get(type);
     if(!array) return;
     const index = array.indexOf(observer);
     if(index >= 0) array.splice(index, 1);
   }
 
-  public UnsubscribeAll(observer: ServerEventObserver): void{
+  /*public UnsubscribeAll(observer: ServerEventObserver): void{
     this.Observers.forEach((arr) => {
       const index = arr.indexOf(observer);
       if(index >= 0) arr.splice(index, 1);
     });
-  }
+  }*/
 
   //#endregion
 }

@@ -7,14 +7,14 @@ import Bomb from "../components/Bomb";
 
 
 class Game extends React.Component{
-    
+
 
   render(){
-    return( 
+    return(
     <div className = 'Game'>
         <div className = 'ScreenContent' />
-        
-        <div className = 'Bar'>       
+
+        <div className = 'Bar'>
             <section className="CurrentPlayer">
                 <PlayerAvatar name="Honza" character="" color={0} />
                 <section className="Attributes">
@@ -36,7 +36,7 @@ class Game extends React.Component{
                 <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
             </section>
         </div>
-    </div>
+      </div>
     );}
 }
 

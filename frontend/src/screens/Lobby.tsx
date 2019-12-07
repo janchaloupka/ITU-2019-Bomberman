@@ -1,9 +1,19 @@
 import React from "react";
 import './Lobby.scss';
 import PlayerAvatar from "../components/PlayerAvatar";
+import { RouteComponentProps, withRouter } from "react-router";
+import { API } from "../logic/API";
+import { ClientEventType } from "../enums/ClientEventType";
 
 //TODO tlacitko zpet odkazujici na seznam mistnosti
-class Lobby extends React.Component{
+class Lobby extends React.Component<RouteComponentProps>{
+  componentDidMount(){
+    let id = (this.props.match.params as {id: string}).id;
+    if(id === "new"){
+      API.SendEvent({Type: ClientEventType.CreateLobby});
+    }
+  }
+
   render(){
     return (
       <div className="Lobby">
@@ -53,4 +63,4 @@ class Lobby extends React.Component{
   }
 }
 
-export default Lobby;
+export default withRouter(Lobby);

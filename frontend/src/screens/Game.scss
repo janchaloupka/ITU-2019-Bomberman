@@ -1,22 +1,26 @@
 .Game{
   position: absolute;
-  top: 0;
+  display: flex;
   left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
-  display: flex;
 
   .ScreenContent{
-    //display: grid;
-    //grid-template-columns: max-content auto;
-    //grid-template-rows: auto max-content max-content;
+    display: grid;
+    grid-template-rows: auto max-content;
     width: 100%;
     height: 100%;
+  }
+
+  .GameArea{
     image-rendering: pixelated;
     background-image: url('../assets/ice_map.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: 100%;
+    image-rendering: pixelated;
     position: relative;
+    margin: -24px;
+    margin-bottom: 0;
   }
 }
 
@@ -28,7 +32,7 @@
     bottom: 0px;
     width: 100%;
     height: 15%;
-    background-color: azure; 
+    background-color: azure;
 }
 
 .CurrentPlayer{
@@ -75,4 +79,3 @@
     justify-self: center;
     align-self: center;
 }
-
