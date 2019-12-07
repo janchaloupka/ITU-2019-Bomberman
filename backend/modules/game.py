@@ -111,18 +111,18 @@ class Game:
         x = 1
         for p in Player:
             if x == 1:
-                Player.position.setX(0)
-                Player.position.setY(0)
+                p.getPosition().setX(0)
+                p.getPosition().setY(0)
                 x += 1
             if x == 2:
-                Player.position.setX(self.map.width - 1)
-                Player.position.setY(0)
+                p.getPosition().setX(self.map.width - 1)
+                p.getPosition().setY(0)
                 x += 1
             if x == 3:
-                Player.position.setX(0)
-                Player.position.setY(self.map.height - 1)
+                p.getPosition().setX(0)
+                p.getPosition().setY(self.map.height - 1)
                 x += 1
             if x == 4:
-                Player.position.setX(self.map.width - 1)
-                Player.position.setY(self.map.height - 1)
+                p.getPosition().setX(self.map.width - 1)
+                p.getPosition().setY(self.map.height - 1)
                 x += 1

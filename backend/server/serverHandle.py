@@ -52,15 +52,19 @@ def createPlayer(obj):
     '''Vytvori noveho hrace a prida ho do seznamu vsech pripojenych hracu, indentifikace pomoci WebsocketServerHandle'''
     player = Player(ID().getID(), "")
     Connections[obj] = player
-    Players[player.getID] = player 
+    Players[player.getID()] = player 
 
 def deletePlayer(obj):
     '''Smaze hrace ze seznamu a znici objekt'''
     ID = Connections[obj].getID()
     del Connections[obj]
-    obj = Players[ID]
+    objekt = Players[ID]
     del Players[ID]
-    del obj
+    for g in Games:
+        if objekt in g.getPlayers():
+            g.getPlayers().remove(objekt)
+            checkGame(g)
+    del objekt
 
 def createGame(obj):
     '''Vytvori novou hru ve fazi lobby'''
@@ -107,8 +111,8 @@ def startGame(data):
             'Collision' : True,
             'Destroyable' : False,
             'Background' : False,
-            'PosX' : o.getPosition.getX(),
-            'PosY' : o.getPosition.getY()
+            'PosX' : o.getPosition().getX(),
+            'PosY' : o.getPosition().getY()
         }
         x += 1 
 
@@ -118,11 +122,20 @@ def startGame(data):
             'Collision' : True,
             'Destroyable' : True,
             'Background' : False,
-            'PosX' : b.getPosition.getX(),
-            'PosY' : b.getPosition.getY()
+            'PosX' : b.getPosition().getX(),
+            'PosY' : b.getPosition().getY()
         }
         x += 1
 
+    for p in game.getPlayers:
+        objects[x] = {
+            'Type' : 'Player',
+            'Collision' : False,
+            'Destroyable' : True,
+            'Background' : False,
+            'PosX' : p.getPosition().getX(),
+            'PosY' : p.getPosition().getY()
+        }
     data = {
         'MapObject' : objects
     }
@@ -281,8 +294,7 @@ def processMessage(connection, obj):
 
 def notifyGameMembers(gameID):
     for conn in Connections.keys():
-        if (Connections[conn] in Games[gameID].players):
-            #TODO posle to i vlastnikovi, nutno pridat vlastnika do game
+        if ((Connections[conn] in Games[gameID].players) and Connections[conn] != Games[gameID].players[0]):
             message = {}
             message['Type'] = "LobbyUpdate"
             players = {}
@@ -293,25 +305,23 @@ def notifyGameMembers(gameID):
                 x += 1
             data = {"NumberOfRounds" : Games[gameID].getNoOfRounds(), "TimeLimit" : Games[gameID].getTimeLimit, "Players" : players}
             message['Data'] = data
-            #notify neozkouseno!!!!
             conn.notify(message)
 
 def notifyAboutPlayer(gameId, playerID, event_type):
+    """Upozorni ostatni cleny hry o hraci (join/leave)"""
     for conn in Connections.keys():
-        if (Connections[conn] in Games[gameId].players):
-            #TODO posle to i vlastnikovi, nutno pridat vlastnika do game
+        if (Connections[conn] in Games[gameId].players and Connections[conn] != Games[gameId].players[0]):
             message = {}
             message['Type'] = event_type
             data = {"Player" : playerID}
             message['Data'] = data
-            #notify neozkouseno!!!!
             conn.notify(message)
 
 def notifySubscribed(change):
-    event_type = change.getType()
-    game = change.getGame()
     '''Upozorni hrace odebirajici LobbyList o zmene
     zprava: {'Type' : event_type(New/Change/Remove), 'Data' : {GameID, PLayerCount(u Remove ne)} }'''
+    event_type = change.getType()
+    game = change.getGame()
     for conn in Connections.keys():
         if Connections[conn] in Subscribed:
             if (event_type == "LobbyListItemRemove"):
@@ -355,6 +365,7 @@ def move(conn, data):
     return "OK"
 
 def placeBomb(conn):
+    """Polozeni bomby"""
     player = Connections(conn)
     #musime vyresit nejakej base
     bomb = Bomb(player, 3, 4 + player.getPower(), player.getPosition().getX(), player.getPosition().getX())
@@ -363,3 +374,11 @@ def placeBomb(conn):
             g.getBombs().append(bomb)
     
     return {'Type' : "BombPlace"}
+
+def checkGame(game):
+    """Zkontroluje pocet hracu ve hre, pokud je 0 tak smaze a posle zpravu o smazani, jinak posila zpravu o Change"""
+    if len(game.getPlayers) == 0:
+        del Games[game]
+        notifySubscribed(Change("LobbyListItemRemove", game))
+    else:
+        notifySubscribed(Change("LobbyListItemChange", game))

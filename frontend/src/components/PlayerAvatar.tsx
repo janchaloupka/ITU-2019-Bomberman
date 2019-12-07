@@ -1,6 +1,6 @@
 import React from "react";
 import "./PlayerAvatar.scss";
-import "../assets/sprites.png";
+import "../assets/avatar_default.png";
 
 interface PlayerAvatarProps{
   name: string;

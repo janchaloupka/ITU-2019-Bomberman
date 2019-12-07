@@ -6,10 +6,9 @@
   .Avatar{
     width: 128px;
     height: 128px;
-    background-image: url('../assets/sprites.png');
-    background-size: 512px 512px;
+    background-image: url('../assets/avatar_default.png');
     image-rendering: pixelated;
-    background-position: 0 256px;
+    background-size: 100%;
     transform: scale(1.25);
     margin: 16px;
   }
