@@ -13,24 +13,45 @@ from backend.modules.character import Characters
 from backend.modules.map import mockMap
 from backend.modules.bomb import Bomb
 from ObservableList import ObservableList
-from Observer import Observer
 #from backend.server.my_server_protocol import MyServerProtocol
 
 
+#Dictionary vsech hracu na serveru podle MyServerProtocol
+#Connections[MyServerProtocol] = player
+Connections = {}
 # Dictionary vsech hracu na serveru
 # Players[PlayerID] = player
-Connections = {}
 Players = {}
+#Dictionary vsech her
+#Games[GameID] = game
 Games = {}
+#Dictionary her co jsou ve fazi Lobby
+#Lobby[GameID] = game
 Lobby = ObservableList()
-observer = Observer()
+#List hracu co se prihlasili k subscribu lobby
+Subscribed = []
 
-def handler(event):
-    notifySubscribed()
+def observer(change):
+    notifySubscribed(change)
 
-Lobby.register_observer(observer())
+Lobby.register_observer(observer)
 
-Observer()
+def subscribeToLobyList(connection):
+    """Prida hrace do seznamu subscribe, odpovi zpravou:
+    {'Type': "LobbyListItemNew", 'Data' : {GameID, PlayerCount}}"""
+    Subscribed.append(Connections[connection])
+    data = {}
+    x = 0
+    for g in Lobby:
+        data[x] = {
+            'GameID' : g.getID(),
+            'PlayerCount' : len(g.getPlayers())
+        }
+    message = {
+        'Type': "LobbyListItemNew",
+        'Data': data
+    }
+    return message
 
 def createPlayer(obj):
     '''Vytvori noveho hrace a prida ho do seznamu vsech pripojenych hracu, indentifikace pomoci WebsocketServerHandle'''
@@ -51,7 +72,8 @@ def createGame(obj):
     game = Game()
     game.addPlayer(Connections[obj])
     Games[game.getId()] = game
-    Lobby.append(game) 
+    Lobby.append(game)
+    Lobby.notify_observers("LobbyListItemNew", game)
     return game
 
 def updateGame(data):
@@ -65,7 +87,8 @@ def updateGame(data):
             game.setTimeLimit(data['TimeLimit'])
         if data['NumberOfRounds'] is not None:
             game.setTimeLimit(data['NumberOfRounds'])
-            notifyGameMembers(game.getID()) 
+            notifyGameMembers(game.getID())
+        notifySubscribed("LobbyListItemChange", game)
 
     return "OK"
 
@@ -73,10 +96,8 @@ def startGame(data):
     '''Zmeni stav z JeVLobby na HrajeSe, vygeneruje barelly a pozice'''
     game = Games[data['Game']]
 
-    for g in Games:
-        if not g.getIsLobby():
-            del Games[g]
-            Lobby.remove(g)
+    Lobby.remove(game)
+    notifySubscribed("LobbyListItemRemove", game)
 
     #Uz to dela vsechno
     obstacles, barrels = game.start()
@@ -162,10 +183,6 @@ def removePlayerFromGame(conn):
         if player in g.getPlayers:
             g.removePlayer(player)
             notifyAboutPlayer(g.getID(), player.getID(), "PlayerLeave")
-            
-def subscribeToLobyList():
-    '''TODO'''
-    pass
 
 def processMessage(connection, obj):
     '''Process message'''
@@ -177,9 +194,11 @@ def processMessage(connection, obj):
         Connections[connection].setNick(data['Nick'])
 
     elif (obj['Type'] == "SubscribeLobbyList"):
-        pass
+        return subscribeToLobyList(connection)
+    
     elif (obj['Type'] == "UnsubscribeLobbyList"):
-        pass
+        Subscribed.remove(Connections[connection])
+    
     elif (obj['Type'] == "JoinLobby"):
         '''Zavola pridani hrace o lobby, pokud je odpoved chybova hlaska odesle LobbyLeave zpravu
         ocekava {Type : "ChangeName", Data : { ID : gameID}'''
@@ -293,8 +312,26 @@ def notifyAboutPlayer(gameId, playerID, event_type):
             #notify neozkouseno!!!!
             conn.notify(message)
 
-def notifySubscribed():
-    pass
+def notifySubscribed(event_type, game):
+    '''Upozorni hrace odebirajici LobbyList o zmene
+    zprava: {'Type' : event_type(New/Change/Remove), 'Data' : {GameID, PLayerCount(u Remove ne)} }'''
+    for conn in Connections.keys():
+        if Connections[conn] in Subscribed:
+            if (event_type == "LobbyListItemRemove"):
+                data = {
+                    'GameId' : game.getID()
+                }
+            else:
+                data = {
+                    'GameId' : game.getID(),
+                    'PlayerCount' : len(game.getPlayers())
+                }
+            message = {
+                'Type' : event_type,
+                'Data' : data
+            }
+            conn.notify(message)
+            
 
 def move(conn, data):
     '''
