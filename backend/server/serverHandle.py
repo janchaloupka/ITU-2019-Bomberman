@@ -13,6 +13,7 @@ from backend.modules.character import Characters
 from backend.modules.map import mockMap
 from backend.modules.bomb import Bomb
 from backend.modules.change import Change
+import threading
 #from backend.server.my_server_protocol import MyServerProtocol
 
 
@@ -330,8 +331,10 @@ def notifySubscribed(change):
                 }
             else:
                 data = {
-                    'GameId' : game.getID(),
-                    'PlayerCount' : len(game.getPlayers())
+                    'ID' : game.getID(),
+                    'PlayerCount' : len(game.getPlayers()),
+                    'HostName' : game.getPlayers[0].getNick(),
+                    'MapName' : game.getMap().getName()
                 }
             message = {
                 'Type' : event_type,

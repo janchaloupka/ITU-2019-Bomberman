@@ -9,7 +9,7 @@ import random
 from typing import List
 from backend.modules.id import ID
 from backend.modules.player import Player
-from backend.modules.map import Map
+from backend.modules.map import Map, mockMap
 from backend.modules.barrel import Barrel
 from backend.modules.bomb import Bomb
 
@@ -19,7 +19,7 @@ class Game:
         self.isLobby = True
         self.timeLimit = 0
         self.noOfRounds = 0
-        self.map: Map = None
+        self.map: Map = mockMap["Map1"]
         self.players: List[Player] = []
         self.barrels: List[Barrel] = []
         self.bombs: List[Bomb] = []
