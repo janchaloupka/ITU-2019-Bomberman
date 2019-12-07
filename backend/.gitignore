@@ -1,6 +1,2 @@
-<<<<<<< HEAD
-modules/__pycache__/
-=======
-/modules/__pycache__/
-/server/__pychache__/
->>>>>>> server
+modules/__pycache__
+server/__pycache__

@@ -6,10 +6,25 @@ import MainPage from './screens/MainPage';
 import LobbyList from './screens/LobbyList';
 import Lobby from './screens/Lobby';
 import Game from './screens/Game';
+import { API, ServerEventObserver } from "./logic/API";
+import { ServerEventType } from './enums/ServerEventType';
+import { ServerEvent } from './models/ServerEvent';
+import { ClientEvent } from "./models/ClientEvent";
+import { ClientEventType } from './enums/ClientEventType';
 
 
-class App extends React.Component {
+class App extends React.Component implements ServerEventObserver {
+  NewMessage(data: ServerEvent){
+
+  }
+
   render (){
+    API.Unsubscribe(ServerEventType.BombPlace, this);
+    API.OnOpen(() => {
+      API.SendEvent({
+        Type: ClientEventType.CreateLobby
+      });
+    });
     return (
       <div className="App">
         <Router>
