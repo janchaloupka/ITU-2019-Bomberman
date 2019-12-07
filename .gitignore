@@ -1,2 +1,4 @@
 
 frontend/yarn.lock
+frontend/package-lock.json
+*.json
