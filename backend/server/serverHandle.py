@@ -12,7 +12,7 @@ from backend.modules.map import Map
 from backend.modules.character import Characters
 from backend.modules.map import mockMap
 from backend.modules.bomb import Bomb
-from ObservableList import ObservableList
+from backend.modules.change import Change
 #from backend.server.my_server_protocol import MyServerProtocol
 
 
@@ -27,14 +27,9 @@ Players = {}
 Games = {}
 #Dictionary her co jsou ve fazi Lobby
 #Lobby[GameID] = game
-Lobby = ObservableList()
+Lobby = []
 #List hracu co se prihlasili k subscribu lobby
 Subscribed = []
-
-def observer(change):
-    notifySubscribed(change)
-
-Lobby.register_observer(observer)
 
 def subscribeToLobyList(connection):
     """Prida hrace do seznamu subscribe, odpovi zpravou:
@@ -71,9 +66,9 @@ def createGame(obj):
     '''Vytvori novou hru ve fazi lobby'''
     game = Game()
     game.addPlayer(Connections[obj])
-    Games[game.getId()] = game
+    Games[game.getID()] = game
     Lobby.append(game)
-    Lobby.notify_observers("LobbyListItemNew", game)
+    notifySubscribed(Change("LobbyListItemNew", game))
     return game
 
 def updateGame(data):
@@ -88,7 +83,7 @@ def updateGame(data):
         if data['NumberOfRounds'] is not None:
             game.setTimeLimit(data['NumberOfRounds'])
             notifyGameMembers(game.getID())
-        notifySubscribed("LobbyListItemChange", game)
+        notifySubscribed(Change("LobbyListItemChange", game))
 
     return "OK"
 
@@ -97,7 +92,7 @@ def startGame(data):
     game = Games[data['Game']]
 
     Lobby.remove(game)
-    notifySubscribed("LobbyListItemRemove", game)
+    notifySubscribed(Change("LobbyListItemRemove", game))
 
     #Uz to dela vsechno
     obstacles, barrels = game.start()
@@ -312,7 +307,9 @@ def notifyAboutPlayer(gameId, playerID, event_type):
             #notify neozkouseno!!!!
             conn.notify(message)
 
-def notifySubscribed(event_type, game):
+def notifySubscribed(change):
+    event_type = change.getType()
+    game = change.getGame()
     '''Upozorni hrace odebirajici LobbyList o zmene
     zprava: {'Type' : event_type(New/Change/Remove), 'Data' : {GameID, PLayerCount(u Remove ne)} }'''
     for conn in Connections.keys():
