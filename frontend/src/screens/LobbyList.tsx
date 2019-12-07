@@ -6,18 +6,32 @@ import { API } from "../logic/API";
 import { ServerEventType } from "../enums/ServerEventType";
 import { Lobby } from "../models/Lobby";
 import { ClientEventType } from "../enums/ClientEventType";
+import { LobbyListItem as LobbyListItemModel } from "../models/LobbyListItem";
+
+interface LobbyListState{
+  items: LobbyListItemModel[];
+}
 
 class LobbyList extends React.Component<RouteComponentProps>{
-  ListItemChange(lobby: Lobby){
-    //console.log("Item change:", lobby);
+  state: LobbyListState = {
+    items: []
   }
 
-  ListItemNew(lobby: Lobby){
-    //console.log("New item:", lobby);
+  ListItemNew(item: LobbyListItemModel){
+    let newItemsState = [...this.state.items, item];
+    this.setState({items: newItemsState});
   }
 
-  ListItemRemove(lobby: Lobby){
-    //console.log("Item removed:", lobby);
+  ListItemChange(item: LobbyListItemModel){
+    // TODO
+  }
+
+  ListItemRemove(item: LobbyListItemModel){
+    let index = this.state.items.map((v) => v.ID).indexOf(item.ID);
+    if(index < 0) return;
+
+    let newItemsState = ([...this.state.items]).splice(index, 1);
+    this.setState({items: newItemsState});
   }
 
   componentDidMount(){
@@ -29,6 +43,10 @@ class LobbyList extends React.Component<RouteComponentProps>{
 
   componentWillUnmount(){
     API.SendEvent({Type: ClientEventType.UnsubscribeLobbyList});
+  }
+
+  private renderItems(){
+
   }
 
   render(){
