@@ -9,4 +9,7 @@ from backend.modules.position import Position
 
 class Barrel(Position):
     def __init__(self, x: int = 0, y: int = 0):
-        Position.__init__(x, y)
+        self.position = Position.__init__(x, y)
+
+    def getPosition(self):
+        return self.position
