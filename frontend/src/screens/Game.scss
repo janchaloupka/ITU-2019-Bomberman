@@ -23,7 +23,7 @@
 .Bar {
     display: grid;
     grid-template-columns: 33% 33% 33%;
-    grid-template-rows: 200px;
+    grid-template-rows: auto;
     position: absolute;
     bottom: 0px;
     width: 100%;
@@ -42,9 +42,14 @@
       grid-column: 1;
       align-self: center;
     }
-    .HealthBar{
+    .Attributes{
+        grid-row: 1;
         grid-column: 2;
-        align-self: center;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: auto;
+        justify-items: end;
+        padding-right: 10px;
     }
   }
 
@@ -70,3 +75,4 @@
     justify-self: center;
     align-self: center;
 }
+
