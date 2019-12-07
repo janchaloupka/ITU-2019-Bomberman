@@ -333,7 +333,7 @@ def notifySubscribed(change):
                 data = {
                     'ID' : game.getID(),
                     'PlayerCount' : len(game.getPlayers()),
-                    'HostName' : game.getPlayers[0].getNick(),
+                    'HostName' : game.getPlayers()[0].getNick(),
                     'MapName' : game.getMap().getName()
                 }
             message = {

@@ -4,14 +4,24 @@ import PlayerAvatar from "../components/PlayerAvatar";
 import { RouteComponentProps, withRouter } from "react-router";
 import { API } from "../logic/API";
 import { ClientEventType } from "../enums/ClientEventType";
+import { GameManager } from "../logic/GameManager";
 
 //TODO tlacitko zpet odkazujici na seznam mistnosti
 class Lobby extends React.Component<RouteComponentProps>{
+
+
   componentDidMount(){
+    console.log("Hello World");
     let id = (this.props.match.params as {id: string}).id;
     if(id === "new"){
       API.SendEvent({Type: ClientEventType.CreateLobby});
+    }else if(!GameManager.CurrentLobby){
+      API.SendEvent({Type: ClientEventType.JoinLobby, Data: {ID: parseInt(id, 10)}});
     }
+  }
+
+  componentWillUnmount(){
+
   }
 
   render(){

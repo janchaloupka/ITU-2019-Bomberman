@@ -9,6 +9,7 @@ import Game from './screens/Game';
 import { API } from './logic/API';
 import { ServerEventType } from './enums/ServerEventType';
 import { Lobby as LobbyModel } from "./models/Lobby";
+import { GameManager } from './logic/GameManager';
 
 interface AppState{
   ServerConnected: boolean;
@@ -27,6 +28,12 @@ class App extends React.Component<RouteComponentProps, AppState>{
 
   private ReactToLobbyJoin(lobby: LobbyModel){
     this.props.history.replace(`/game/${lobby.ID}`);
+    if(GameManager.CurrentLobby){
+      console.error("Nelze se připojit k lobby, když už je součástí lobby.");
+      return;
+    }
+
+    GameManager.CurrentLobby = lobby;
   }
 
   render (){

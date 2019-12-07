@@ -4,7 +4,6 @@ import LobbyListItem from "../components/LobbyListItem";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import { API } from "../logic/API";
 import { ServerEventType } from "../enums/ServerEventType";
-import { Lobby } from "../models/Lobby";
 import { ClientEventType } from "../enums/ClientEventType";
 import { LobbyListItem as LobbyListItemModel } from "../models/LobbyListItem";
 
@@ -18,6 +17,8 @@ class LobbyList extends React.Component<RouteComponentProps>{
   }
 
   ListItemNew(item: LobbyListItemModel){
+    if(!item.PlayerCount) return;
+
     let newItemsState = [...this.state.items, item];
     this.setState({items: newItemsState});
   }
@@ -46,7 +47,18 @@ class LobbyList extends React.Component<RouteComponentProps>{
   }
 
   private renderItems(){
+    let items: JSX.Element[] = [];
+    this.state.items.forEach(item => {
+      items.push(<LobbyListItem
+        key={item.ID.toString()}
+        id={item.ID.toString()}
+        host={item.HostName}
+        map={item.MapName}
+        connected={item.PlayerCount}
+      />);
+    });
 
+    return items;
   }
 
   render(){
@@ -58,9 +70,7 @@ class LobbyList extends React.Component<RouteComponentProps>{
           </header>
           <section className="list">
             <LobbyListItem id="new" host="+ Založit novou místnost"/>
-            <LobbyListItem id="1234" host="Janch" map="Skladiště" connected={1}/>
-            <LobbyListItem id="1234" host="Michal" map="Park" connected={2}/>
-            <LobbyListItem id="1234" host="Tom" map="Skladiště" connected={4}/>
+            {this.renderItems()}
           </section>
         </div>
       </div>
