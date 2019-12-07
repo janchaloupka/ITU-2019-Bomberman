@@ -2,13 +2,14 @@ import { ServerEvent } from "../models/ServerEvent";
 import { ServerEventType } from "../enums/ServerEventType";
 import { ClientEvent } from "../models/ClientEvent";
 
-interface ServerEventObserver{
+export interface ServerEventObserver{
   NewMessage(data: ServerEvent): void;
 }
 
 class ServerCommunication{
   private Socket: WebSocket;
   private Observers: Map<ServerEventType, ServerEventObserver[]>;
+  private OnOpenObservers: (() => void)[] = [];
 
   constructor(serverUrl: string){
     this.Observers = new Map<ServerEventType, ServerEventObserver[]>();
@@ -21,7 +22,7 @@ class ServerCommunication{
   }
 
   private Close(ev: CloseEvent){
-
+    console.log("WebSocket connection closed");
   }
 
   private Error(ev: Event){
@@ -29,7 +30,8 @@ class ServerCommunication{
   }
 
   private Open(){
-
+    console.log("WebSocket connection opened!");
+    this.OnOpenObservers.forEach(obs => obs());
   }
 
   private Message(ev: MessageEvent){
@@ -37,6 +39,7 @@ class ServerCommunication{
 
     try{
       event = JSON.parse(ev.data);
+      console.log(event);
     }catch(e){
       console.error("Failed to parse server event", ev);
       return;
@@ -45,11 +48,17 @@ class ServerCommunication{
     this.NotifySubscribers(event);
   }
 
+  public OnOpen(callback: () => void){
+    this.OnOpenObservers.push(callback);
+  }
+
   public SendEvent(event: ClientEvent){
-    if(this.Socket.readyState != WebSocket.OPEN){
+    if(this.Socket.readyState !== WebSocket.OPEN){
       console.error("Failed to send event. WebSocket is not OPEN", event);
       return;
     }
+
+    console.log("Sent:", JSON.stringify(event));
 
     this.Socket.send(JSON.stringify(event));
   }
@@ -57,7 +66,9 @@ class ServerCommunication{
   //#region Observer
 
   private NotifySubscribers(data: ServerEvent){
-    const array = this.Observers.get(data.Type) ?? [];
+    const array = this.Observers.get(data.Type);
+    if(!array) return;
+
     for (const o of array) {
       o.NewMessage(data);
     }
@@ -67,11 +78,13 @@ class ServerCommunication{
     if(!this.Observers.has(type))
       this.Observers.set(type, []);
 
-    this.Observers.get(type)?.push(observer);
+    let observers = this.Observers.get(type);
+    if(observers) observers.push(observer);
   }
 
   public Unsubscribe(type: ServerEventType, observer: ServerEventObserver): void{
-    const array = this.Observers.get(type) ?? [];
+    const array = this.Observers.get(type);
+    if(!array) return;
     const index = array.indexOf(observer);
     if(index >= 0) array.splice(index, 1);
   }
@@ -86,4 +99,4 @@ class ServerCommunication{
   //#endregion
 }
 
-export const API = new ServerCommunication("127.0.0.1:9000");
+export const API = new ServerCommunication("ws://127.0.0.1:9000");
