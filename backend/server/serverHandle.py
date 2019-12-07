@@ -168,7 +168,7 @@ def addToLobby(player, data):
         i = p.getID()
         players[x] = i
         x += 1
-    data = {"NumberOfRounds" : game.getNoOfRounds(), "TimeLimit" : game.getTimeLimit, "Players" : players}
+    data = {"NumberOfRounds" : game.getNoOfRounds(), "TimeLimit" : game.getTimeLimit(), "Players" : players}
     response['Data'] = data
     notifyAboutPlayer(game.getID(), Connections[player].getID(), "PlayerJoin")
     return response
@@ -214,7 +214,7 @@ def processMessage(connection, obj):
         '''Zavola pridani hrace o lobby, pokud je odpoved chybova hlaska odesle LobbyLeave zpravu
         ocekava {Type : "ChangeName", Data : { ID : gameID}'''
         response = addToLobby(connection, obj['Data'])
-        if (type(response) != str):
+        if (type(response) == str):
             bad_response = {}
             bad_response['Type'] = "LobbyLeave"
             bad_response['Data'] = response
