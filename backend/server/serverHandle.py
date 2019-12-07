@@ -219,7 +219,7 @@ def processMessage(connection, obj):
             i = p.getID()
             players[x] = i
             x += 1
-        data = {"NumberOfRounds" : 0, "TimeLimit" : 0, "Players" : players}
+        data = {"ID": game.getID(), "NumberOfRounds" : 0, "TimeLimit" : 0, "Players" : players}
         response['Data'] = data    
         return response
 

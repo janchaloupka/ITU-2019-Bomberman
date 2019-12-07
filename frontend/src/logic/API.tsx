@@ -6,6 +6,7 @@ class ServerCommunication{
   private Socket: WebSocket;
   private Observers: Map<ServerEventType, ((data: any) => void)[]>;
   private OnOpenObservers: (() => void)[] = [];
+  private OnCloseObservers: (() => void)[] = [];
 
   constructor(serverUrl: string){
     this.Observers = new Map<ServerEventType, ((data: any) => void)[]>();
@@ -19,6 +20,7 @@ class ServerCommunication{
 
   private Close(ev: CloseEvent){
     console.log("WebSocket connection closed");
+    this.OnCloseObservers.forEach(obs => obs());
   }
 
   private Error(ev: Event){
@@ -48,6 +50,10 @@ class ServerCommunication{
     this.OnOpenObservers.push(callback);
   }
 
+  public Disconnected(callback: () => void){
+    this.OnCloseObservers.push(callback);
+  }
+
   public SendEvent(event: ClientEvent){
     if(this.Socket.readyState !== WebSocket.OPEN){
       console.error("Failed to send event. WebSocket is not OPEN", event);
@@ -60,7 +66,6 @@ class ServerCommunication{
   }
 
   //#region Observer
-
   private NotifySubscribers(data: ServerEvent){
     const array = this.Observers.get(data.Type);
     if(!array) return;
@@ -84,15 +89,7 @@ class ServerCommunication{
     const index = array.indexOf(observer);
     if(index >= 0) array.splice(index, 1);
   }
-
-  /*public UnsubscribeAll(observer: ServerEventObserver): void{
-    this.Observers.forEach((arr) => {
-      const index = arr.indexOf(observer);
-      if(index >= 0) arr.splice(index, 1);
-    });
-  }*/
-
   //#endregion
 }
 
-export const API = new ServerCommunication("ws://127.0.0.1:9000");
+export const API = new ServerCommunication(`ws://${window.location.hostname}:9000`);
