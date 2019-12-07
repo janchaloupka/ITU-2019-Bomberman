@@ -3,19 +3,25 @@ import './Game.scss';
 //import './Lobby.scss'
 import PlayerAvatar from "../components/PlayerAvatar";
 import HealthBar from "../components/HealthBar";
-
+import Countdown from 'react-countdown-now';
 
 
 class Game extends React.Component{
+
+
   render(){
     return(
     <div className = 'Game'>
-      <div className = 'ScreenContent'>
-        <div className = 'GameArea'></div>
-        <div className = 'GameInfo'>
+        <div className = 'ScreenContent' />
+
+        <div className = 'Bar'>
             <section className="CurrentPlayer">
                 <PlayerAvatar name="Honza" character="" color={0} />
                 <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
+            </section>
+
+            <section className="Countdown">
+                <Countdown date={Date.now() + 10000}/>
             </section>
 
             <section className="OtherPlayers">
@@ -28,7 +34,6 @@ class Game extends React.Component{
             </section>
         </div>
       </div>
-    </div>
     );}
 }
 
