@@ -4,10 +4,10 @@ import { Map } from "./Map";
 import { Observable } from "./Observable";
 
 export interface Lobby extends Observable{
-  GameID: number;
-  Rounds: number;
+  ID: number;
+  NumberOfRounds: number;
   TimeLimit: number;
-  Map: Map;
+  Map?: Map;
   Players: Player[];
-  Games: Game[];
+  Games?: Game[];
 }

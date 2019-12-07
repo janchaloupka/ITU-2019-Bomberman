@@ -8,13 +8,11 @@ import HealthBar from "../components/HealthBar";
 
 class Game extends React.Component{
   render(){
-    return( 
+    return(
     <div className = 'Game'>
-        <div className = 'ScreenContent'>
-
-        
-        </div>
-        <div className = 'Bar'>
+      <div className = 'ScreenContent'>
+        <div className = 'GameArea'></div>
+        <div className = 'GameInfo'>
             <section className="CurrentPlayer">
                 <PlayerAvatar name="Honza" character="" color={0} />
                 <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
@@ -29,6 +27,7 @@ class Game extends React.Component{
                 <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
             </section>
         </div>
+      </div>
     </div>
     );}
 }

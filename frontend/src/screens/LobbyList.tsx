@@ -1,8 +1,9 @@
 import React from "react";
 import './LobbyList.scss';
 import LobbyListItem from "../components/LobbyListItem";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 
-class LobbyList extends React.Component{
+class LobbyList extends React.Component<RouteComponentProps>{
   render(){
     return (
       <div className="LobbyList">
@@ -22,4 +23,4 @@ class LobbyList extends React.Component{
   }
 }
 
-export default LobbyList;
+export default withRouter(LobbyList);
