@@ -13,7 +13,7 @@ from backend.modules.character import Characters
 from backend.modules.map import mockMap
 from backend.modules.bomb import Bomb
 from backend.modules.change import Change
-import threading
+from threading import Timer
 #from backend.server.my_server_protocol import MyServerProtocol
 
 
@@ -31,6 +31,8 @@ Games = {}
 Lobby = []
 #List hracu co se prihlasili k subscribu lobby
 Subscribed = []
+
+
 
 def subscribeToLobyList(connection):
     """Prida hrace do seznamu subscribe, odpovi zpravou:
@@ -368,15 +370,22 @@ def move(conn, data):
     return "OK"
 
 def placeBomb(conn):
-    """Polozeni bomby"""
+    """Polozeni bomby, nahozeni logky casovani"""
     player = Connections(conn)
-    #musime vyresit nejakej base
+    #TODO:musime vyresit nejakej base
     bomb = Bomb(player, 3, 4 + player.getPower(), player.getPosition().getX(), player.getPosition().getX())
     for g in Games():
         if not g.getIsLobby():
             g.getBombs().append(bomb)
-    
+            bomb_timer = Timer(3.0, detonate, [bomb, g])
+            bomb_timer.start()
+
     return {'Type' : "BombPlace"}
+
+def detonate(bomb, game):
+    game.getBombs().remove()
+    #VYBUCH
+    del bomb
 
 def checkGame(game):
     """Zkontroluje pocet hracu ve hre, pokud je 0 tak smaze a posle zpravu o smazani, jinak posila zpravu o Change"""
