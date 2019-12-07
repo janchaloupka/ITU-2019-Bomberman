@@ -6,6 +6,7 @@ import { API } from "../logic/API";
 import { ServerEventType } from "../enums/ServerEventType";
 import { ClientEventType } from "../enums/ClientEventType";
 import { LobbyListItem as LobbyListItemModel } from "../models/LobbyListItem";
+import { runInThisContext } from "vm";
 
 interface LobbyListState{
   items: LobbyListItemModel[];
@@ -35,15 +36,25 @@ class LobbyList extends React.Component<RouteComponentProps>{
     this.setState({items: newItemsState});
   }
 
+  private ChangeEvent: ((data: any) => void) = () => {};
+  private NewEvent: ((data: any) => void) = () => {};
+  private RemoveEvent: ((data: any) => void) = () => {};
+
   componentDidMount(){
-    API.Subscribe(ServerEventType.LobbyListItemChange, (data) => this.ListItemChange(data));
-    API.Subscribe(ServerEventType.LobbyListItemNew, (data) => this.ListItemNew(data));
-    API.Subscribe(ServerEventType.LobbyListItemRemove, (data) => this.ListItemRemove(data));
+    this.ChangeEvent = (data) => this.ListItemChange(data);
+    this.NewEvent = (data) => this.ListItemNew(data);
+    this.RemoveEvent = (data) => this.ListItemRemove(data);
+    API.Subscribe(ServerEventType.LobbyListItemChange, this.ChangeEvent);
+    API.Subscribe(ServerEventType.LobbyListItemNew, this.NewEvent);
+    API.Subscribe(ServerEventType.LobbyListItemRemove, this.RemoveEvent);
     API.SendEvent({Type: ClientEventType.SubscribeLobbyList});
   }
 
   componentWillUnmount(){
     API.SendEvent({Type: ClientEventType.UnsubscribeLobbyList});
+    API.Unsubscribe(ServerEventType.LobbyListItemChange, this.ChangeEvent);
+    API.Unsubscribe(ServerEventType.LobbyListItemNew, this.NewEvent);
+    API.Unsubscribe(ServerEventType.LobbyListItemRemove, this.RemoveEvent);
   }
 
   private renderItems(){

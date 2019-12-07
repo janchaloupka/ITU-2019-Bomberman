@@ -12,7 +12,7 @@ interface LobbyListItemProps{
 class LobbyListItem extends React.Component<LobbyListItemProps>{
   render(){
     return(
-    <Link to={"/game/" + this.props.id} className="LobbyListItem">
+    <Link to={"/" + this.props.id} className="LobbyListItem">
       <div className="Host">{this.props.host}</div>
       <div className="Map">{this.props.map}</div>
       {this.props.connected != null && (<div className="Connected">{this.props.connected}</div>) }

@@ -162,13 +162,13 @@ def addToLobby(player, data):
     
     response = {}
     response['Type'] = "LobbyJoin"
-    players = {}
-    x = 1
+    players = []
     for p in game.getPlayers():
-        i = p.getID()
-        players[x] = i
-        x += 1
-    data = {"NumberOfRounds" : game.getNoOfRounds(), "TimeLimit" : game.getTimeLimit(), "Players" : players}
+        players.append({
+            "ID": p.getID(),
+            "Nick": p.getNick()
+        })
+    data = {"ID": game.getID(), "NumberOfRounds" : game.getNoOfRounds(), "TimeLimit" : game.getTimeLimit(), "Players" : players}
     response['Data'] = data
     notifyAboutPlayer(game.getID(), Connections[player].getID(), "PlayerJoin")
     return response
@@ -229,14 +229,14 @@ def processMessage(connection, obj):
         game = createGame(connection)
         response = {}
         response['Type'] = "LobbyJoin"
-        players = {}
-        x = 1
+        players = []
         for p in game.getPlayers():
-            i = p.getID()
-            players[x] = i
-            x += 1
+            players.append({
+                "ID": p.getID(),
+                "Nick": p.getNick()
+            })
         data = {"ID": game.getID(), "NumberOfRounds" : 0, "TimeLimit" : 0, "Players" : players}
-        response['Data'] = data    
+        response['Data'] = data
         return response
 
     elif (obj['Type'] == "UpdateLobbySettings"):
@@ -313,7 +313,7 @@ def notifyGameMembers(gameID):
 def notifyAboutPlayer(gameId, playerID, event_type):
     """Upozorni ostatni cleny hry o hraci (join/leave)"""
     for conn in Connections.keys():
-        if (Connections[conn] in Games[gameId].players and Connections[conn] != Games[gameId].players[0]):
+        if (Connections[conn] in Games[gameId].players and Connections[conn] != Players[playerID]):
             message = {}
             message['Type'] = event_type
             data = {"Player" : playerID}

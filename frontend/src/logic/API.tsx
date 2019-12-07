@@ -7,9 +7,18 @@ class ServerCommunication{
   private Observers: Map<ServerEventType, ((data: any) => void)[]>;
   private OnOpenObservers: (() => void)[] = [];
   private OnCloseObservers: (() => void)[] = [];
+  private lastServerUrl: string = "";
 
   constructor(serverUrl: string){
     this.Observers = new Map<ServerEventType, ((data: any) => void)[]>();
+
+    this.Socket = {} as WebSocket;
+    this.Connect(serverUrl);
+  }
+
+  public Connect(serverUrl?: string){
+    if(!serverUrl) serverUrl = this.lastServerUrl;
+    else this.lastServerUrl = serverUrl;
 
     this.Socket = new WebSocket(serverUrl);
     this.Socket.onopen = () => this.Open();
