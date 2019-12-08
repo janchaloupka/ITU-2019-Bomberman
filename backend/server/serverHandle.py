@@ -174,7 +174,13 @@ def addToLobby(player, data):
             "ID": p.getID(),
             "Nick": p.getNick()
         })
-    data = {"ID": game.getID(), "NumberOfRounds" : game.getNoOfRounds(), "TimeLimit" : game.getTimeLimit(), "Players" : players}
+    data = {
+        "ID": game.getID(), 
+        "NumberOfRounds" : game.getNoOfRounds(), 
+        "TimeLimit" : game.getTimeLimit(), 
+        "Players" : players,
+        "YourID" : Connections[player].getID()
+    }
     response['Data'] = data
     notifySubscribed(Change("LobbyListItemChange", game))
     notifyAboutPlayer(game.getID(), Connections[player], "PlayerJoin")
@@ -251,7 +257,8 @@ def processMessage(connection, obj):
             "ID": game.getID(), 
             "NumberOfRounds" : game.getNoOfRounds(), 
             "TimeLimit" : game.getTimeLimit(), 
-            "Players" : players
+            "Players" : players,
+            "YourID" : p.getID()
         }
         response['Data'] = data
         return response
@@ -331,7 +338,7 @@ def notifyGameMembers(gameID):
 def notifyAboutPlayer(gameId, player, event_type):
     """Upozorni ostatni cleny hry o hraci (join/leave)"""
     for conn in Connections.keys():
-        if (Connections[conn] in Games[gameId].players and Connections[conn] != Players[player.getID()]):
+        if (Connections[conn] in Games[gameId].players and (Connections[conn] != Players[player.getID()] or event_type == "NameChange")):
             message = {}
             message['Type'] = event_type
             data = {

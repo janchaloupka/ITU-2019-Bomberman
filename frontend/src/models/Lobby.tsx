@@ -5,9 +5,10 @@ import { Observable } from "./Observable";
 
 export interface Lobby extends Observable{
   ID: number;
+  YourID: number;
   NumberOfRounds: number;
   TimeLimit: number;
   Map?: Map;
   Players: Player[];
-  Games?: Game[];
+  //Games?: Game[];
 }
