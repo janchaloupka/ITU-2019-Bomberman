@@ -1,5 +1,6 @@
-import React from "react";
+import React, { KeyboardEvent, FocusEvent } from "react";
 import './LobbyList.scss';
+import '../assets/player.png';
 import LobbyListItem from "../components/LobbyListItem";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import { API } from "../logic/API";
@@ -10,13 +11,11 @@ import { GameManager } from "../logic/GameManager"
 
 interface LobbyListState{
   items: LobbyListItemModel[];
-  nick: string;
 }
 
 class LobbyList extends React.Component<RouteComponentProps>{
   state: LobbyListState = {
-    items: [],
-    nick: GameManager.Nick
+    items: []
   }
 
   ListItemNew(item: LobbyListItemModel | LobbyListItemModel[]){
@@ -81,11 +80,20 @@ class LobbyList extends React.Component<RouteComponentProps>{
     return items;
   }
 
-  setNick(event: any){
-    GameManager.Nick = event.target.value;
-    this.setState({
-        nick: GameManager.Nick
-    })
+  setNick(event: FocusEvent<HTMLInputElement>){
+    let val = (event.target as HTMLInputElement).value;
+    GameManager.Nick = val;
+  }
+
+  setNickKey(event: KeyboardEvent<HTMLInputElement>){
+    const elem = (event.target as HTMLInputElement);
+
+    if(event.key === "Enter"){
+      elem.blur();
+    }else if(event.key === "Escape"){
+      elem.value = GameManager.Nick;
+      elem.blur();
+    }
   }
 
   render(){
@@ -95,16 +103,21 @@ class LobbyList extends React.Component<RouteComponentProps>{
       <div className="LobbyList">
         <div className="ScreenContent">
           <header>
-                <div className="Grid">
-
-                    <input value={this.state.nick} onChange={this.setNick.bind(this)}/>
-
-                    <h2>Dostupné hry</h2>
-                </div>
+            <label>
+              <input defaultValue={GameManager.Nick} onKeyPress={this.setNickKey} onBlur={this.setNick}/>
+              <span>Změna jména</span>
+            </label>
+            <h2>Dostupné hry</h2>
           </header>
           <section className="list">
             <LobbyListItem id="new" host="+ Založit novou hru"/>
-            {items.length > 0 ? items : (<p>Nejsou k dispozici žádné otevřené hry :(<br/>Můžete vytvořit novou hru kliknutím na tlačítko výše.</p>)}
+            {
+              items.length > 0 ? items : (
+              <p>
+                Nejsou k dispozici žádné otevřené hry :(<br/>
+                Můžete vytvořit novou hru kliknutím na tlačítko výše.
+              </p>)
+            }
           </section>
         </div>
       </div>

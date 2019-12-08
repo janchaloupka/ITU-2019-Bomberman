@@ -6,9 +6,15 @@ import { API } from "../logic/API";
 import { ClientEventType } from "../enums/ClientEventType";
 import { GameManager } from "../logic/GameManager";
 
-//TODO tlacitko zpet odkazujici na seznam mistnosti
-class Lobby extends React.Component<RouteComponentProps>{
+interface LobbyState{
+  InviteCopied: boolean
+}
 
+//TODO tlacitko zpet odkazujici na seznam mistnosti
+class Lobby extends React.Component<RouteComponentProps, LobbyState>{
+  state: LobbyState = {
+    InviteCopied: false
+  }
 
   componentDidMount(){
     console.log("Hello World");
@@ -22,6 +28,17 @@ class Lobby extends React.Component<RouteComponentProps>{
 
   componentWillUnmount(){
 
+  }
+
+  private copyTimeout?: number;
+  copyInvitation(){
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      this.setState({InviteCopied: true});
+      clearTimeout(this.copyTimeout);
+      this.copyTimeout = window.setTimeout(() => this.setState({InviteCopied: false}), 2000);
+    }, () => {
+      alert("Nepodařilo se zkopírovat odkaz do schránky");
+    });
   }
 
   render(){
@@ -64,7 +81,10 @@ class Lobby extends React.Component<RouteComponentProps>{
             <PlayerAvatar name="Ituga" character="" color={40} />
           </section>
           <footer>
-            <button className="Secondary">Zkopírovat pozvánku</button>
+            <button
+              className={"Secondary Copy" + (this.state.InviteCopied ? " Copied" : "")}
+              onClick={() => this.copyInvitation()}
+            >Zkopírovat pozvánku</button>
             <button>Spustit hru</button>
           </footer>
         </div>

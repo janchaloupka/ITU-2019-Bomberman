@@ -24,7 +24,7 @@ class ID:
         randId = 0
         
         while randId in self.pool or randId < 1:
-            randId = random.randint(1, 999999)
+            randId = random.randint(1, 9999)
 
         self.pool.append(randId)
         
