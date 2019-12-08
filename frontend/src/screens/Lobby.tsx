@@ -21,7 +21,7 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     NumberOfRounds: 0,
     TimeLimit: 30,
     Players: [],
-    YourID: 0
+    YourID: 0,
   }
 
   private subscribedUpdate = (() => {});
@@ -71,6 +71,11 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     });
   }
 
+  startGame(){
+    console.log("Send new game");
+    API.SendEvent({Type: ClientEventType.StartGame, Data: {ID: this.state.ID}});
+    console.log("New game sent");
+  }
   setNick(event: FocusEvent<HTMLInputElement>){
     let val = (event.target as HTMLInputElement).value;
     GameManager.Nick = val;

@@ -200,10 +200,10 @@ def setPlayerCharacter(conn, data):
             player.setCharacter(Characters[ch])
 
 def changeGameMap(data):
-    '''Nastavi mapu ke hre'''
+    '''Nastavi mapu ke hre, mapa se nacita ze souboru, kde je odkaz na obrazek s pozadim (ulozeno jako string do Map.background)'''
     game = Games[data['Game']]
-    map = data['Map']
-    game.setMap(map)
+    mapa = data['Map']
+    game.setMap(Map(mapa))
 
 def removePlayerFromGame(conn):
     '''Odstrani hrace z hry, upozorni ostatni hrace'''
