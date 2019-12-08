@@ -231,6 +231,7 @@ def changeGameMap(data):
     game = Games[data['Game']]
     mapa = data['Map']
     game.setMap(Map(mapa))
+    notifyGameMembers(game.getId())
 
 def removePlayerFromGame(player):
     '''Odstrani hrace z hry, upozorni ostatni hrace'''
@@ -336,7 +337,7 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "ChangeMap"):
         '''Zavola zmenu mapy
         ocekava: {Type : "ChangeMap", Data : {Game : GameId, Map : MapName}}'''
-        changeGameMap(obj['Data'])
+        return changeGameMap(obj['Data'])
 
     elif (obj['Type'] == "LeaveLobby"):
         '''Zavola odstraneni hrace z hry a opet se prihlasi k odebirani lobby listu
@@ -394,7 +395,22 @@ def notifyGameMembers(gameID):
                 i = p.getID()
                 players[x] = i
                 x += 1
-            data = {"NumberOfRounds" : Games[gameID].getNoOfRounds(), "TimeLimit" : Games[gameID].getTimeLimit(), "Players" : players}
+            obstacles = []
+            for o in Games[gameID].getMap().getObstacles():
+                obstacles.append({
+                    'Type' : 'Obstacle',
+                    'Collision' : True,
+                    'Destroyable' : False,
+                    'Background' : False,
+                    'PosX' : o.getPosition().getX(),
+                    'PosY' : o.getPosition().getY()
+                })
+            mapa = {
+                "ID" : Games[gameID].getMap().getID(),
+                "Name" : Games[gameID].getMap().getName(),
+                "Obstacles" : obstacles
+            }
+            data = {"NumberOfRounds" : Games[gameID].getNoOfRounds(), "TimeLimit" : Games[gameID].getTimeLimit(),"Map" : mapa , "Players" : players}
             message['Data'] = data
             conn.notify(message)
 
