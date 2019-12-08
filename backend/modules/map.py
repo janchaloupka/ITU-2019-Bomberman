@@ -26,7 +26,7 @@ class Map:
 
     def generateObstacles(self):
         '''Dle typu mapy vytvori prekazky'''
-        if (self.id == "IceMap"):
+        if (self.id == "Overworld"):
             for x in range(1, self.width ,2):
                 for y in range(1, self.height, 2):
                     self.obstacles.append(Obstacle(x, y))
