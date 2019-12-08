@@ -238,8 +238,8 @@ def removePlayerFromGame(player):
     '''Odstrani hrace z hry, upozorni ostatni hrace'''
     for g in Games.values():
         if player in g.getPlayers():
-            g.removePlayer(player)
             notifyAboutPlayer(g.getID(), player, "PlayerLeave")
+            g.removePlayer(player)
 
 def processMessage(connection, obj):
     '''Process message'''
