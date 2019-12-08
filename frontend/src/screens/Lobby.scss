@@ -18,7 +18,7 @@
     margin-left: 8px;
     margin-top: 8px;
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: max-content 100%;
     grid-template-rows: max-content max-content max-content auto;
 
     h2{
@@ -28,13 +28,14 @@
 
     .Value{
       margin-top: auto;
+      margin-left: 32px;
       font-size: 40px;
       font-weight: bold;
     }
 
     label{
       margin-top: 48px;
-      max-width: 300px;
+      width: 300px;
 
       input[type=range]{
         appearance: none;
@@ -87,7 +88,7 @@
     }
 
     .Name{
-
+      margin: 0 16px;
     }
   }
 
@@ -107,7 +108,10 @@
     grid-row: 2 / 3;
     grid-column: 2 / 3;
     display: flex;
-    justify-content: space-around;
+
+    .PlayerAvatar{
+      margin-right: 48px;
+    }
   }
 
   footer{

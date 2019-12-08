@@ -90,12 +90,12 @@ def updateGame(data):
     else:
         print(Games)
         game = Games[data['ID']]
-        if data['TimeLimit'] is not None:
+        if 'TimeLimit' in data:
             game.setTimeLimit(data['TimeLimit'])
-        if data['NumberOfRounds'] is not None:
-            game.setTimeLimit(data['NumberOfRounds'])
-            notifyGameMembers(game.getID())
-        notifySubscribed(Change("LobbyListItemChange", game))
+        if 'NumberOfRounds' in data:
+            game.setNoOfRounds(data['NumberOfRounds'])
+        notifyGameMembers(game.getID())
+        #notifySubscribed(Change("LobbyListItemChange", game))
 
     return "OK"
 
@@ -161,6 +161,9 @@ def addToLobby(player, data):
     if (data['ID'] is None):
         return "No Game ID send"
     else:
+        if data['ID'] not in Games.keys():
+            return "Game does not exists"
+        
         game = Games[data['ID']]
         if (len(game.players) == 4):
             return "Game full"
@@ -297,7 +300,7 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "StartGame"):
         '''Spusti spousteni hry
         ocekava : {Type : "StartGame", Data : { Game : gameID}'''
-        return startGame(obj['data'])
+        return startGame(obj['Data'])
 
     elif (obj['Type'] == "Move"):
         '''Zavola pohyb
@@ -323,7 +326,7 @@ def processMessage(connection, obj):
 
 def notifyGameMembers(gameID):
     for conn in Connections.keys():
-        if ((Connections[conn] in Games[gameID].players) and Connections[conn] != Games[gameID].players[0]):
+        if ((Connections[conn] in Games[gameID].players)):
             message = {}
             message['Type'] = "LobbyUpdate"
             players = {}
@@ -332,7 +335,7 @@ def notifyGameMembers(gameID):
                 i = p.getID()
                 players[x] = i
                 x += 1
-            data = {"NumberOfRounds" : Games[gameID].getNoOfRounds(), "TimeLimit" : Games[gameID].getTimeLimit, "Players" : players}
+            data = {"NumberOfRounds" : Games[gameID].getNoOfRounds(), "TimeLimit" : Games[gameID].getTimeLimit(), "Players" : players}
             message['Data'] = data
             conn.notify(message)
 

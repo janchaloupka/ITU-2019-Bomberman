@@ -37,7 +37,7 @@ class Game:
     def getNoOfRounds(self) -> int:
         return self.noOfRounds
 
-    def setNoOfRounds(self, no_of_rounds: int) -> None:
+    def setNoOfRounds(self, noOfRounds: int) -> None:
         self.noOfRounds = noOfRounds
     
     def getPlayers(self) -> List[Player]:

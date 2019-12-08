@@ -11,6 +11,7 @@ import { ServerEventType } from './enums/ServerEventType';
 import { Lobby as LobbyModel } from "./models/Lobby";
 import { GameManager } from './logic/GameManager';
 import { ClientEventType } from './enums/ClientEventType';
+import Connecting from './screens/Connecting';
 
 interface AppState{
   ServerConnected: boolean;
@@ -51,7 +52,7 @@ class App extends React.Component<RouteComponentProps, AppState>{
   private ReactToLobbyLeave(){
     this.props.history.replace(`/list`);
     if(!GameManager.CurrentLobby){
-      console.error("Nelze se odpojit z lobby, protože nejsme v lobby.");
+      console.info("Nelze se odpojit z lobby, protože nejsme v lobby.");
       return;
     }
 
@@ -62,6 +63,9 @@ class App extends React.Component<RouteComponentProps, AppState>{
     if(this.state.ServerConnected) return (
       <div className="App">
         <Switch>
+          <Route exact path="/connecting">
+            <Connecting/>
+          </Route>
           <Route exact path="/list">
             <LobbyList/>
           </Route>
