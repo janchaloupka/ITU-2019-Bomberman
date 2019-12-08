@@ -25,8 +25,7 @@ Players = {}
 #Dictionary vsech her
 #Games[GameID] = game
 Games = {}
-#Dictionary her co jsou ve fazi Lobby
-#Lobby[GameID] = game
+#List lobby
 Lobby = []
 #List hracu co se prihlasili k subscribu lobby
 Subscribed = []
@@ -356,7 +355,11 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "StartGame"):
         '''Spusti spousteni hry
         ocekava : {Type : "StartGame", Data : { Game : gameID}'''
-        return startGame(obj['Data'])
+        response = startGame(obj['Data'])
+        data = obj['Data']
+        game = data['ID']
+        notifyGameMembersStart(game, response, obj)
+        return response
 
     elif (obj['Type'] == "Move"):
         '''Zavola pohyb
@@ -382,7 +385,7 @@ def processMessage(connection, obj):
 
 def notifyGameMembers(gameID):
     for conn in Connections.keys():
-        if ((Connections[conn] in Games[gameID].players)):
+        if ((Connections[conn] in Games[gameID].getPlayers())):
             message = {}
             message['Type'] = "LobbyUpdate"
             players = {}
@@ -394,6 +397,12 @@ def notifyGameMembers(gameID):
             data = {"NumberOfRounds" : Games[gameID].getNoOfRounds(), "TimeLimit" : Games[gameID].getTimeLimit(), "Players" : players}
             message['Data'] = data
             conn.notify(message)
+
+def notifyGameMembersStart(gameId, message, connection):
+    for conn in Connections.keys():
+        if Connections[conn] in Games[gameId].getPlayers():
+            if conn != connection:
+                conn.notify(message)
 
 def notifyAboutPlayer(gameId, player, event_type):
     """Upozorni ostatni cleny hry o hraci (join/leave)"""
