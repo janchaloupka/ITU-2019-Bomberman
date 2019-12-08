@@ -42,6 +42,12 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     });
   }
 
+  startGame(){
+    console.log("Send new game");
+    API.SendEvent({Type: ClientEventType.StartGame, Data: {ID: GameManager.CurrentLobby.ID}});
+    console.log("New game sent");
+  }
+
   render(){
     return (
       <div className="Lobby">
@@ -88,7 +94,7 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
               className={"Secondary Copy" + (this.state.InviteCopied ? " Copied" : "")}
               onClick={() => this.copyInvitation()}
             >Zkopírovat pozvánku</button>
-            <Link to={(this.props.match.params as {id: string}).id + "/game"} className="Button">Spustit hru</Link>
+            <Link to={(this.props.match.params as {id: string}).id + "/game"} onClick={this.startGame} className="Button">Spustit hru</Link>
           </footer>
         </div>
       </div>

@@ -4,10 +4,10 @@ import PlayerAvatar from "../components/PlayerAvatar";
 import HealthBar from "../components/HealthBar";
 import Countdown from 'react-countdown-now';
 import Bomb from "../components/Bomb";
-
+import { API } from '../logic/API';
+import { ClientEventType } from '../enums/ClientEventType';
 
 class Game extends React.Component{
-
 
   render(){
     return(
