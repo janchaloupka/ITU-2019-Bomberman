@@ -33,9 +33,25 @@ class Game extends React.Component<RouteComponentProps, GameState>{
 
         return players.map((p) => {
           let i = this.state.Players.indexOf(p);
-          return (<PlayerAvatar key={p.ID} name={p.Nick} character={p.Character.ID} color={100*i} />)
+          return (<section className="OtherPlayers"><PlayerAvatar key={p.ID} name={p.Nick} character={p.Character.ID} color={100*i} /> <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" /></section>) 
         });
-      }
+    }
+
+    renderSelf(){
+        let player = this.state.Players.find((p) => p.ID === this.state.YourID);
+        if(!player) return;
+        let i = this.state.Players.indexOf(player);
+
+        return(
+            <section className="CurrentPlayer">
+                <PlayerAvatar key={player.ID} name={player.Nick} character={player.Character.ID} color={100*i}/>
+                <section className="Attributes">
+                    <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
+                    <Bomb bombsLeft={3}/>
+                </section>
+            </section>   
+        );
+    }    
 
     render(){
         return(
@@ -43,21 +59,16 @@ class Game extends React.Component<RouteComponentProps, GameState>{
             <div className = 'ScreenContent' />
 
             <div className = 'Bar'>
-                <section className="CurrentPlayer">
-                    <PlayerAvatar name="Honza" character="" color={0} />
-                    <section className="Attributes">
-                        <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
-                        <Bomb bombsLeft={3}/>
-                    </section>
-                </section>
+
+            { this.renderSelf() }                
 
                 <section className="Countdown">
                     <Countdown date={Date.now() + this.state.TimeLimit * 1000}/>
                 </section>
 
-                <section className="OtherPlayers">
+                
                 { this.renderOpponents() }
-                </section>
+                
             </div>
         </div>
         );}

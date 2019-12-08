@@ -58,7 +58,7 @@
     grid-row: 1;
     grid-column: 3;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(2, max-content);
     grid-template-rows: auto;
     justify-items: end;
     padding-right: 10px;
