@@ -16,7 +16,7 @@ class Player(Position):
         self.ID = ID
         self.nick = nick
         self.remainingLife = 0
-        self.position: Position = None
+        self.position: Position = self
         self.character: Character = Characters["regular"]
 
     def getID(self) -> int:

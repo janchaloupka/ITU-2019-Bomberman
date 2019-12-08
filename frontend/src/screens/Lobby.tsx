@@ -72,11 +72,6 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     });
   }
 
-  startGame(){
-    console.log("Send new game");
-    API.SendEvent({Type: ClientEventType.StartGame, Data: {ID: this.state.ID}});
-    console.log("New game sent");
-  }
   setNick(event: FocusEvent<HTMLInputElement>){
     let val = (event.target as HTMLInputElement).value;
     GameManager.Nick = val;
@@ -158,6 +153,11 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     });
   }
 
+  startGame(){
+    if(this.state.Players.length < 2) return;
+    API.SendEvent({Type: ClientEventType.StartGame, Data: {ID: this.state.ID}});
+  }
+
   render(){
     return (
       <div className="Lobby">
@@ -204,7 +204,7 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
               onClick={() => this.copyInvitation()}
             >Zkopírovat pozvánku</button>
             <button className="Secondary" onClick={() => this.leaveLobby()}>Odejít</button>
-            <Link to={(this.props.match.params as {id: string}).id + "/game"} className="Button">Spustit hru</Link>
+            <button disabled={this.state.Players.length < 2} onClick={() => this.startGame()}>Spustit hru</button>
           </footer>
         </div>
       </div>
