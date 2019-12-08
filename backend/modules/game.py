@@ -84,8 +84,8 @@ class Game:
         self.isLobby = False
         self.currentRound = 1
         obstacles = self.map.getObstacles()
-        generateBarrels()
-        generatePlayerPositions()
+        self.generateBarrels()
+        self.generatePlayerPositions()
         return obstacles, self.barrels
 
     def generateBarrels(self):
@@ -113,7 +113,7 @@ class Game:
 
     def generatePlayerPositions(self):
         x = 1
-        for p in Player:
+        for p in self.players:
             if x == 1:
                 p.getPosition().setX(0)
                 p.getPosition().setY(0)

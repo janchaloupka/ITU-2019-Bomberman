@@ -62,17 +62,16 @@ def createPlayer(obj):
 def deletePlayer(obj):
     '''Smaze hrace ze seznamu a znici objekt'''
     ID = Connections[obj].getID()
-    del Connections[obj]
     if (Players[ID] in Subscribed):
         Subscribed.remove(Players[ID])
     objekt = Players[ID]
-    del Players[ID]
     vals = list(Games.values())
     for g in vals:
         if objekt in g.getPlayers():
             removePlayerFromGame(objekt)
             checkGame(g)
-    del objekt
+    del Players[ID]
+    del Connections[obj]
 
 def createGame(obj):
     '''Vytvori novou hru ve fazi lobby'''
@@ -102,7 +101,7 @@ def updateGame(data):
 
 def startGame(data):
     '''Zmeni stav z JeVLobby na HrajeSe, vygeneruje barelly a pozice'''
-    game = Games[data['Game']]
+    game = Games[data['ID']]
 
     Lobby.remove(game)
     notifySubscribed(Change("LobbyListItemRemove", game))
@@ -238,8 +237,9 @@ def removePlayerFromGame(player):
     '''Odstrani hrace z hry, upozorni ostatni hrace'''
     for g in Games.values():
         if player in g.getPlayers():
-            notifyAboutPlayer(g.getID(), player, "PlayerLeave")
             g.removePlayer(player)
+            notifyAboutPlayer(g.getID(), player, "PlayerLeave")
+
 
 def processMessage(connection, obj):
     '''Process message'''
@@ -342,7 +342,15 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "LeaveLobby"):
         '''Zavola odstraneni hrace z hry a opet se prihlasi k odebirani lobby listu
         ocekava ocekava: {Type : "LeaveLobby"}'''
-        removePlayerFromGame(Connections[connection])
+        vals = Games.values()
+        objekt = Connections[connection]
+        for g in vals:
+            if objekt in g.getPlayers():
+                toremove = objekt
+                tocheck = g
+                break
+        removePlayerFromGame(toremove)
+        checkGame(tocheck)
         return {"Type": "LobbyLeave"}
     
     elif (obj['Type'] == "StartGame"):
@@ -391,7 +399,7 @@ def notifyAboutPlayer(gameId, player, event_type):
     """Upozorni ostatni cleny hry o hraci (join/leave)"""
     if len(Games[gameId].getPlayers()) != 0:
         for conn in Connections.keys():
-            if (Connections[conn] in Games[gameId].players and (Connections[conn] != Players[player.getID()] or event_type != "PlayerJoin")):
+            if (Connections[conn] in Games[gameId].getPlayers() and (Connections[conn] != Players[player.getID()] or event_type != "PlayerJoin")):
                 message = {}
                 message['Type'] = event_type
                 data = {
@@ -496,9 +504,9 @@ def endOfRound(game):
         }
     }
     for p in game.getPlayers():
-        for conn in Connections.keys:
+        for conn in Connections.keys():
             if p == Connections[conn]:
                 conn.notify(response)
-    if not game.getCurrentRound == game.getNoOfRounds:
+    if not game.getCurrentRound() == game.getNoOfRounds():
         game_timer = Timer(game.getTimeLimit(), endOfRound, [game])
         game_timer.start()

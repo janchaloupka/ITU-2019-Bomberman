@@ -40,7 +40,8 @@ class LobbyList extends React.Component<RouteComponentProps>{
     let index = this.state.items.map((v) => v.ID).indexOf(item.ID);
     if(index < 0) return;
 
-    let newItemsState = ([...this.state.items]).splice(index, 1);
+    let newItemsState = this.state.items;
+    newItemsState.splice(index, 1);
     this.setState({items: newItemsState});
   }
 

@@ -42,7 +42,7 @@ class Game extends React.Component<RouteComponentProps, GameState>{
           
 
         let updatedPlayers = this.state.Players;
-        for (let i = 0; i < this.state.Players.length; i++){          
+        for (let i = 0; i < this.state.Players.length; i++){
             updatedPlayers[i].RemainingLives = this.state.Players[i].Character.MaxLives + 3;
             updatedPlayers[i].RemainingBombs = this.state.Players[i].Character.MaxBombs + 3;
         }
@@ -67,7 +67,7 @@ class Game extends React.Component<RouteComponentProps, GameState>{
                 <section className="OtherPlayers">
                     <PlayerAvatar key={p.ID} name={p.Nick} character={p.Character.ID} color={100*i} />
                     <HealthBar heartsLeft={p.RemainingLives}/>
-                </section>) 
+                </section>)
         });
     }
 

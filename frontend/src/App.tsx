@@ -38,6 +38,22 @@ class App extends React.Component<RouteComponentProps, AppState>{
 
     API.Subscribe(ServerEventType.LobbyJoin, (data) => this.ReactToLobbyJoin(data));
     API.Subscribe(ServerEventType.LobbyLeave, () => this.ReactToLobbyLeave());
+    API.Subscribe(ServerEventType.GameStart, () => this.ReactToGameStart());
+    API.Subscribe(ServerEventType.GameEnd, () => this.ReactToGameEnd());
+  }
+
+  private ReactToGameStart(){
+    if(!GameManager.CurrentLobby) return;
+
+    GameManager.State = GameManagerState.Game;
+    this.props.history.replace(`/${GameManager.CurrentLobby.ID}/game`)
+  }
+
+  private ReactToGameEnd(){
+    if(!GameManager.CurrentLobby) return;
+
+    GameManager.State = GameManagerState.Lobby;
+    this.props.history.replace(`/${GameManager.CurrentLobby.ID}`)
   }
 
   private ReactToLobbyJoin(lobby: LobbyModel){
