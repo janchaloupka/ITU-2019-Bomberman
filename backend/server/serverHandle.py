@@ -198,8 +198,8 @@ def addToLobby(player, data):
         })
     mapa = {
         "ID" : game.getMap().getID(),
-        "Name" : game.getMap().getID(),
-        "Obstacles" : obstacles
+        "Name" : game.getMap().getName(),
+        "Objects" : obstacles
     }    
     data = {
         "ID": game.getID(), 
@@ -305,8 +305,8 @@ def processMessage(connection, obj):
             })
         mapa = {
             "ID" : game.getMap().getID(),
-            "Name" : game.getMap().getID(),
-            "Obstacles" : obstacles
+            "Name" : game.getMap().getName(),
+            "Objects" : obstacles
         }
         data = {
             "ID": game.getID(), 

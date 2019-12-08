@@ -5,3 +5,9 @@ export interface Map{
   Name: string;
   Objects: MapObject[];
 }
+
+export const Maps: string[] = [
+  "Overworld",
+  "IceMap",
+  "FootballPitch"
+]

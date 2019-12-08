@@ -1,15 +1,17 @@
 import React, { KeyboardEvent, FocusEvent, ChangeEvent } from "react";
 import './Lobby.scss';
 import '../assets/player_invert.png';
+import '../assets/Overworld.png';
+import '../assets/IceMap.png';
+import '../assets/FootballPitch.png';
 import PlayerAvatar from "../components/PlayerAvatar";
 import { RouteComponentProps, withRouter } from "react-router";
 import { API } from "../logic/API";
 import { ClientEventType } from "../enums/ClientEventType";
 import { GameManager, GameManagerState } from "../logic/GameManager";
 import { Lobby as LobbyModel } from "../models/Lobby";
-import { ServerEventType } from "../enums/ServerEventType";
-import { Link } from "react-router-dom";
 import { Characters } from "../models/Character";
+import { Maps } from "../models/Map";
 
 interface LobbyState extends LobbyModel{
   InviteCopied: boolean;
@@ -98,6 +100,14 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     }});
   }
 
+  changeMap(i: number){
+    i = (Maps.length + Maps.indexOf(this.state.Map.ID) + i) % Maps.length;
+    API.SendEvent({Type: ClientEventType.ChangeMap, Data: {
+      Map: Maps[i],
+      Game: this.state.ID
+    }});
+  }
+
   leaveLobby(){
     API.SendEvent({Type: ClientEventType.LeaveLobby});
   }
@@ -177,13 +187,12 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
           </section>
 
           <section className="Map">
-            <div className="Preview">
-              MAPA TODO
+            <div className={"Preview " + this.state.Map.ID}>
             </div>
             <div className="Selection">
-              <button className="Small">&lt;</button>
-              <span className="Name">Název mapy</span>
-              <button className="Small">&gt;</button>
+              <button className="Small" onClick={() => this.changeMap(-1)}>&lt;</button>
+              <span className="Name">{this.state.Map.Name}</span>
+              <button className="Small" onClick={() => this.changeMap(1)}>&gt;</button>
             </div>
           </section>
 
