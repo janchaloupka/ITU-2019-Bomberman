@@ -25,8 +25,7 @@ Players = {}
 #Dictionary vsech her
 #Games[GameID] = game
 Games = {}
-#Dictionary her co jsou ve fazi Lobby
-#Lobby[GameID] = game
+#List lobby
 Lobby = []
 #List hracu co se prihlasili k subscribu lobby
 Subscribed = []
@@ -232,6 +231,7 @@ def changeGameMap(data):
     game = Games[data['Game']]
     mapa = data['Map']
     game.setMap(Map(mapa))
+    notifyGameMembers(game.getId())
 
 def removePlayerFromGame(player):
     '''Odstrani hrace z hry, upozorni ostatni hrace'''
@@ -356,7 +356,11 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "StartGame"):
         '''Spusti spousteni hry
         ocekava : {Type : "StartGame", Data : { Game : gameID}'''
-        return startGame(obj['Data'])
+        response = startGame(obj['Data'])
+        data = obj['Data']
+        game = data['ID']
+        notifyGameMembersStart(game, response, obj)
+        return response
 
     elif (obj['Type'] == "Move"):
         '''Zavola pohyb
@@ -382,7 +386,7 @@ def processMessage(connection, obj):
 
 def notifyGameMembers(gameID):
     for conn in Connections.keys():
-        if ((Connections[conn] in Games[gameID].players)):
+        if ((Connections[conn] in Games[gameID].getPlayers())):
             message = {}
             message['Type'] = "LobbyUpdate"
             players = {}
@@ -391,9 +395,30 @@ def notifyGameMembers(gameID):
                 i = p.getID()
                 players[x] = i
                 x += 1
-            data = {"NumberOfRounds" : Games[gameID].getNoOfRounds(), "TimeLimit" : Games[gameID].getTimeLimit(), "Players" : players}
+            obstacles = []
+            for o in Games[gameID].getMap().getObstacles():
+                obstacles.append({
+                    'Type' : 'Obstacle',
+                    'Collision' : True,
+                    'Destroyable' : False,
+                    'Background' : False,
+                    'PosX' : o.getPosition().getX(),
+                    'PosY' : o.getPosition().getY()
+                })
+            mapa = {
+                "ID" : Games[gameID].getMap().getID(),
+                "Name" : Games[gameID].getMap().getName(),
+                "Obstacles" : obstacles
+            }
+            data = {"NumberOfRounds" : Games[gameID].getNoOfRounds(), "TimeLimit" : Games[gameID].getTimeLimit(),"Map" : mapa , "Players" : players}
             message['Data'] = data
             conn.notify(message)
+
+def notifyGameMembersStart(gameId, message, connection):
+    for conn in Connections.keys():
+        if Connections[conn] in Games[gameId].getPlayers():
+            if conn != connection:
+                conn.notify(message)
 
 def notifyAboutPlayer(gameId, player, event_type):
     """Upozorni ostatni cleny hry o hraci (join/leave)"""
