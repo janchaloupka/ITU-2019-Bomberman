@@ -11,7 +11,6 @@ interface LobbyState{
   InviteCopied: boolean
 }
 
-//TODO tlacitko zpet odkazujici na seznam mistnosti
 class Lobby extends React.Component<RouteComponentProps, LobbyState>{
   state: LobbyState = {
     InviteCopied: false
@@ -56,6 +55,10 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
       elem.value = GameManager.Nick;
       elem.blur();
     }
+  }
+
+  leaveLobby(){
+    API.SendEvent({Type: ClientEventType.LeaveLobby});
   }
 
   render(){
@@ -108,6 +111,7 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
               className={"Secondary Copy" + (this.state.InviteCopied ? " Copied" : "")}
               onClick={() => this.copyInvitation()}
             >Zkopírovat pozvánku</button>
+            <button className="Secondary" onClick={() => this.leaveLobby()}>Odejít</button>
             <button>Spustit hru</button>
           </footer>
         </div>

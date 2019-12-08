@@ -35,6 +35,7 @@ class App extends React.Component<RouteComponentProps, AppState>{
     });
 
     API.Subscribe(ServerEventType.LobbyJoin, (data) => this.ReactToLobbyJoin(data));
+    API.Subscribe(ServerEventType.LobbyLeave, () => this.ReactToLobbyLeave());
   }
 
   private ReactToLobbyJoin(lobby: LobbyModel){
@@ -45,6 +46,16 @@ class App extends React.Component<RouteComponentProps, AppState>{
     }
 
     GameManager.CurrentLobby = lobby;
+  }
+
+  private ReactToLobbyLeave(){
+    this.props.history.replace(`/list`);
+    if(!GameManager.CurrentLobby){
+      console.error("Nelze se odpojit z lobby, protože nejsme v lobby.");
+      return;
+    }
+
+    GameManager.CurrentLobby = undefined;
   }
 
   render (){

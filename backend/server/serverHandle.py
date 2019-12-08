@@ -197,7 +197,7 @@ def changeGameMap(data):
 def removePlayerFromGame(conn):
     '''Odstrani hrace z hry, upozorni ostatni hrace'''
     player = Connections[conn]
-    for g in Games.value():
+    for g in Games.values():
         if player in g.getPlayers():
             g.removePlayer(player)
             notifySubscribed(Change("LobbyListItemChange", g))
@@ -283,7 +283,8 @@ def processMessage(connection, obj):
         '''Zavola odstraneni hrace z hry a opet se prihlasi k odebirani lobby listu
         ocekava ocekava: {Type : "LeaveLobby"}'''
         removePlayerFromGame(connection)
-        subscribeToLobyList()
+        return {"Type": "LobbyLeave"}
+        #subscribeToLobyList()
     
     elif (obj['Type'] == "StartGame"):
         '''Spusti spousteni hry
