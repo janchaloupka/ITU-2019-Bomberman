@@ -46,7 +46,7 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
   }
 
   componentWillUnmount(){
-    API.Unsubscribe(ServerEventType.LobbyUpdate, this.subscribedUpdate);
+    GameManager.UnsubscribeLobbyChange(this.subscribedUpdate);
   }
 
   private LobbyUpdate(){
@@ -166,15 +166,15 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
           <section className="GameOptions">
             <h2>Herní místnost</h2>
             <label>
-              <input type="range" min="1" max="3" step="1"/>
+              <input value={this.state.NumberOfRounds} onChange={(e) => this.changeNoOfRounds(e)} type="range" min="1" max="3" step="1"/>
               <span>Počet kol</span>
             </label>
-            <div className="Value">1</div>
+            <div className="Value">{this.state.NumberOfRounds}</div>
             <label>
-              <input type="range" min="30" max="240" step="30"/>
+              <input value={this.state.TimeLimit} onChange={(e) => this.changeTimeLimit(e)} type="range" min="30" max="240" step="30"/>
               <span>Časový limit kola</span>
             </label>
-            <div className="Value">30s</div>
+            <div className="Value">{this.state.TimeLimit}s</div>
           </section>
 
           <section className="Map">
