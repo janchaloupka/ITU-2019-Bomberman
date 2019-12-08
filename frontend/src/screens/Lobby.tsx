@@ -88,7 +88,7 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
               className={"Secondary Copy" + (this.state.InviteCopied ? " Copied" : "")}
               onClick={() => this.copyInvitation()}
             >Zkopírovat pozvánku</button>
-            <Link to={(this.props.match.params as {id: string}).id + "/inProgress"} className="Button">Spustit hru</Link>
+            <Link to={(this.props.match.params as {id: string}).id + "/game"} className="Button">Spustit hru</Link>
           </footer>
         </div>
       </div>
