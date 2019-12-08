@@ -9,45 +9,53 @@ import { GameManager } from "../logic/GameManager";
 class Game extends React.Component{
 
     state={
-        timeLimit:0
+        timeLimit:0,
+        Players: [],
+        YourID: 0
     }
 
     componentDidMount(){
         if(!GameManager.CurrentLobby) return;
         this.setState({
-            timeLimit: GameManager.CurrentLobby.TimeLimit
+            timeLimit: GameManager.CurrentLobby.TimeLimit,
+            players: GameManager.CurrentLobby.Players
         })
     }
 
-  render(){
-    return(
-    <div className = 'Game'>
-        <div className = 'ScreenContent' />
+    renderOpponents(){
+        let players = this.state.Players.filter((p) => p.ID !== this.state.YourID);
+        if(players.length === 0) return <p>Čeká se na hráče...<br/>Adresa pro připojení: <b>{window.location.host}{window.location.pathname}</b></p>;
+    
+        return players.map((p) => {
+          let i = this.state.Players.indexOf(p);
+          return (<PlayerAvatar key={p.ID} name={p.Nick} character={p.Character.ID} color={100*i} />)
+        });
+      }
 
-        <div className = 'Bar'>
-            <section className="CurrentPlayer">
-                <PlayerAvatar name="Honza" character="" color={0} />
-                <section className="Attributes">
-                    <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
-                    <Bomb bombsLeft={3}/>
+    render(){
+        return(
+        <div className = 'Game'>
+            <div className = 'ScreenContent' />
+
+            <div className = 'Bar'>
+                <section className="CurrentPlayer">
+                    <PlayerAvatar name="Honza" character="" color={0} />
+                    <section className="Attributes">
+                        <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
+                        <Bomb bombsLeft={3}/>
+                    </section>
                 </section>
-            </section>
 
-            <section className="Countdown">
-                <Countdown date={Date.now() + this.state.timeLimit * 1000}/>
-            </section>
+                <section className="Countdown">
+                    <Countdown date={Date.now() + this.state.timeLimit * 1000}/>
+                </section>
 
-            <section className="OtherPlayers">
-                <PlayerAvatar name="Michal" character="" color={120} />
-                <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
-                <PlayerAvatar name="Tom" character="" color={200} />
-                <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
-                <PlayerAvatar name="Ituga" character="" color={40} />
-                <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
-            </section>
+                <section className="OtherPlayers">
+                { this.renderOpponents() }
+                </section>
+            </div>
         </div>
-      </div>
-    );}
+        );}
 }
 
 export default Game;
