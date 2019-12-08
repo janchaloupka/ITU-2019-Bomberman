@@ -10,7 +10,8 @@ class Game extends React.Component{
 
     state={
         timeLimit:0,
-        players: []
+        Players: [],
+        YourID: 0
     }
 
     componentDidMount(){
@@ -22,13 +23,14 @@ class Game extends React.Component{
     }
 
     renderOpponents(){
-        return this.state.players.map((p, i) => (
-            <div>
-            <PlayerAvatar key={p.ID} name={p.Nick} character="" color={50*i} />
-            <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart"/>
-            </div>
-        ));
-    }
+        let players = this.state.Players.filter((p) => p.ID !== this.state.YourID);
+        if(players.length === 0) return <p>Čeká se na hráče...<br/>Adresa pro připojení: <b>{window.location.host}{window.location.pathname}</b></p>;
+    
+        return players.map((p) => {
+          let i = this.state.Players.indexOf(p);
+          return (<PlayerAvatar key={p.ID} name={p.Nick} character={p.Character.ID} color={100*i} />)
+        });
+      }
 
     render(){
         return(
