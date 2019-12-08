@@ -79,6 +79,24 @@
       width: 608px;
       height: 320px;
       flex-grow: 1;
+
+      background: black;
+      background-size: contain;
+      image-rendering: pixelated;
+      background-repeat: no-repeat;
+      background-position: center;
+
+      &.Overworld{
+        background-image: url("../assets/Overworld.png");
+      }
+
+      &.IceMap{
+        background-image: url("../assets/IceMap.png");
+      }
+
+      &.FootballPitch{
+        background-image: url("../assets/FootballPitch.png");
+      }
     }
 
     .Selection{
@@ -89,6 +107,8 @@
 
     .Name{
       margin: 0 16px;
+      width: 200px;
+      text-align: center;
     }
   }
 

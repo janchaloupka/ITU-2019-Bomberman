@@ -197,8 +197,8 @@ def addToLobby(player, data):
         })
     mapa = {
         "ID" : game.getMap().getID(),
-        "Name" : game.getMap().getID(),
-        "Obstacles" : obstacles
+        "Name" : game.getMap().getName(),
+        "Objects" : obstacles
     }    
     data = {
         "ID": game.getID(), 
@@ -231,7 +231,7 @@ def changeGameMap(data):
     game = Games[data['Game']]
     mapa = data['Map']
     game.setMap(Map(mapa))
-    notifyGameMembers(game.getId())
+    notifyGameMembers(game.getID())
 
 def removePlayerFromGame(player):
     '''Odstrani hrace z hry, upozorni ostatni hrace'''
@@ -305,8 +305,8 @@ def processMessage(connection, obj):
             })
         mapa = {
             "ID" : game.getMap().getID(),
-            "Name" : game.getMap().getID(),
-            "Obstacles" : obstacles
+            "Name" : game.getMap().getName(),
+            "Objects" : obstacles
         }
         data = {
             "ID": game.getID(), 
