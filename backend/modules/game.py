@@ -17,8 +17,8 @@ class Game:
     def __init__(self):
         self.ID = ID()
         self.isLobby = True
-        self.timeLimit = 0
-        self.noOfRounds = 0
+        self.timeLimit = 60
+        self.noOfRounds = 1
         self.map: Map = mockMap["Map1"]
         self.players: List[Player] = []
         self.barrels: List[Barrel] = []

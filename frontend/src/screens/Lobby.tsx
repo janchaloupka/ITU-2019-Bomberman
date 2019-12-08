@@ -35,7 +35,7 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     navigator.clipboard.writeText(window.location.href).then(() => {
       this.setState({InviteCopied: true});
       clearTimeout(this.copyTimeout);
-      this.copyTimeout = window.setTimeout(() => this.setState({InviteCopied: false}), 2000);
+      this.copyTimeout = window.setTimeout(() => this.setState({InviteCopied: false}), 2500);
     }, () => {
       alert("Nepodařilo se zkopírovat odkaz do schránky");
     });
@@ -46,15 +46,17 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
       <div className="Lobby">
         <div className="ScreenContent">
           <section className="GameOptions">
-            <h2>Lobby</h2>
+            <h2>Herní místnost</h2>
             <label>
-              <input type="range"/>
+              <input type="range" min="1" max="3" step="1"/>
               <span>Počet kol</span>
             </label>
+            <div className="Value">1</div>
             <label>
-              <input type="range"/>
+              <input type="range" min="30" max="240" step="30"/>
               <span>Časový limit kola</span>
             </label>
+            <div className="Value">30s</div>
           </section>
 
           <section className="Map">
