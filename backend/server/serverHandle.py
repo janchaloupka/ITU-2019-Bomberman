@@ -64,7 +64,8 @@ def deletePlayer(obj):
     '''Smaze hrace ze seznamu a znici objekt'''
     ID = Connections[obj].getID()
     del Connections[obj]
-    Subscribed.remove(Players[ID])
+    if (Players[ID] in Subscribed):
+        Subscribed.remove(Players[ID])
     objekt = Players[ID]
     del Players[ID]
     for g in Games.values():
@@ -397,6 +398,8 @@ def checkGame(game):
     """Zkontroluje pocet hracu ve hre, pokud je 0 tak smaze a posle zpravu o smazani, jinak posila zpravu o Change"""
     if len(game.getPlayers) == 0:
         del Games[game]
+        if game in Lobby:
+            Lobby.remove(game)
         notifySubscribed(Change("LobbyListItemRemove", game))
     else:
         notifySubscribed(Change("LobbyListItemChange", game))
