@@ -5,6 +5,7 @@ import { RouteComponentProps, withRouter } from "react-router";
 import { API } from "../logic/API";
 import { ClientEventType } from "../enums/ClientEventType";
 import { GameManager } from "../logic/GameManager";
+import { Link } from "react-router-dom";
 
 interface LobbyState{
   InviteCopied: boolean
@@ -87,7 +88,7 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
               className={"Secondary Copy" + (this.state.InviteCopied ? " Copied" : "")}
               onClick={() => this.copyInvitation()}
             >Zkopírovat pozvánku</button>
-            <button>Spustit hru</button>
+            <Link to={(this.props.match.params as {id: string}).id + "/game"} className="Button">Spustit hru</Link>
           </footer>
         </div>
       </div>
