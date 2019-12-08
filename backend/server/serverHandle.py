@@ -342,7 +342,15 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "LeaveLobby"):
         '''Zavola odstraneni hrace z hry a opet se prihlasi k odebirani lobby listu
         ocekava ocekava: {Type : "LeaveLobby"}'''
-        removePlayerFromGame(Connections[connection])
+        vals = Games.values()
+        objekt = Connections[connection]
+        for g in vals:
+            if objekt in g.getPlayers():
+                toremove = objekt
+                tocheck = g
+                break
+        removePlayerFromGame(toremove)
+        checkGame(tocheck)
         return {"Type": "LobbyLeave"}
     
     elif (obj['Type'] == "StartGame"):
