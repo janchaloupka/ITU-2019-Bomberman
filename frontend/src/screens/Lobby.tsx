@@ -1,5 +1,6 @@
-import React from "react";
+import React, { KeyboardEvent, FocusEvent } from "react";
 import './Lobby.scss';
+import '../assets/player_invert.png';
 import PlayerAvatar from "../components/PlayerAvatar";
 import { RouteComponentProps, withRouter } from "react-router";
 import { API } from "../logic/API";
@@ -39,6 +40,22 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     }, () => {
       alert("Nepodařilo se zkopírovat odkaz do schránky");
     });
+  }
+
+  setNick(event: FocusEvent<HTMLInputElement>){
+    let val = (event.target as HTMLInputElement).value;
+    GameManager.Nick = val;
+  }
+
+  setNickKey(event: KeyboardEvent<HTMLInputElement>){
+    const elem = (event.target as HTMLInputElement);
+
+    if(event.key === "Enter"){
+      elem.blur();
+    }else if(event.key === "Escape"){
+      elem.value = GameManager.Nick;
+      elem.blur();
+    }
   }
 
   render(){
@@ -83,6 +100,10 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
             <PlayerAvatar name="Ituga" character="" color={40} />
           </section>
           <footer>
+            <label className="Nick">
+              <input defaultValue={GameManager.Nick} onKeyPress={this.setNickKey} onBlur={this.setNick}/>
+              <span>Změna jména</span>
+            </label>
             <button
               className={"Secondary Copy" + (this.state.InviteCopied ? " Copied" : "")}
               onClick={() => this.copyInvitation()}
