@@ -2,3 +2,4 @@
 frontend/yarn.lock
 frontend/package-lock.json
 *.json
+frontend/src/logic/API.tsx

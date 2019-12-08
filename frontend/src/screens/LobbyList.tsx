@@ -6,14 +6,17 @@ import { API } from "../logic/API";
 import { ServerEventType } from "../enums/ServerEventType";
 import { ClientEventType } from "../enums/ClientEventType";
 import { LobbyListItem as LobbyListItemModel } from "../models/LobbyListItem";
+import { GameManager } from "../logic/GameManager"
 
 interface LobbyListState{
   items: LobbyListItemModel[];
+  nick: string;
 }
 
 class LobbyList extends React.Component<RouteComponentProps>{
   state: LobbyListState = {
-    items: []
+    items: [],
+    nick: GameManager.Nick
   }
 
   ListItemNew(item: LobbyListItemModel | LobbyListItemModel[]){
@@ -78,6 +81,13 @@ class LobbyList extends React.Component<RouteComponentProps>{
     return items;
   }
 
+  setNick(event: any){
+    GameManager.Nick = event.target.value;
+    this.setState({
+        nick: GameManager.Nick
+    })
+  }
+
   render(){
     let items = this.renderItems();
 
@@ -85,7 +95,12 @@ class LobbyList extends React.Component<RouteComponentProps>{
       <div className="LobbyList">
         <div className="ScreenContent">
           <header>
-            <h2>Dostupné hry</h2>
+                <div className="Grid">
+
+                    <input value={this.state.nick} onChange={this.setNick.bind(this)}/>
+
+                    <h2>Dostupné hry</h2>
+                </div>
           </header>
           <section className="list">
             <LobbyListItem id="new" host="+ Založit novou hru"/>
