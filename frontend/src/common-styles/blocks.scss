@@ -1,6 +1,7 @@
 .SafeArea, .ScreenContent{
   width: 1216px;
   height: 800px;
+  flex-shrink: 0;
 }
 
 .ScreenContent{

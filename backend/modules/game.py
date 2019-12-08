@@ -20,7 +20,7 @@ class Game:
         self.timeLimit = 60
         self.noOfRounds = 1
         self.currentRound = 0
-        self.map: Map = Map("Map1")
+        self.map: Map = Map("Overworld")
         self.players: List[Player] = []
         self.barrels: List[Barrel] = []
         self.bombs: List[Bomb] = []
@@ -90,7 +90,7 @@ class Game:
         return obstacles, self.barrels
 
     def generateBarrels(self):
-        if (self.map.getName == "Map1"):
+        if (self.map.getName == "Overworld"):
             #Zatim nenahodna generace barellu
             #Rady
             for y in range(2, self.map.height - 2, 2):

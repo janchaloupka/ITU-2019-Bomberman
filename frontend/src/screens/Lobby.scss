@@ -96,18 +96,67 @@
     grid-row: 2 / 3;
     grid-column: 1 / 2;
     display: grid;
-    grid-template-columns: max-content auto max-content;
-    grid-template-rows: auto max-content;
+    grid-template-columns: max-content max-content max-content max-content;
+    grid-template-rows: max-content max-content max-content max-content max-content auto;
+    margin-right: auto;
 
     .PlayerAvatar{
-      grid-column: 1 / 4;
+      grid-row: 1 / 7;
     }
+
+    & > .Name{
+      grid-column: 3 / 4;
+      grid-row: 5 / 6;
+      width: 100px;
+      margin: auto 0;
+      text-align: center;
+    }
+
+    button{
+      grid-row: 5 / 6;
+
+      &:first-of-type{
+        grid-column: 2/3;
+      };
+
+      &:last-of-type{
+        grid-column: 4/5;
+      };
+    }
+
+    .Lives, .Speed, .Bombs, .Power{
+      grid-column: 2 / 5;
+      font-size: 28px;
+      padding-left: 8px;
+
+      &:before{
+        width: 150px;
+        display: inline-block;
+      }
+    }
+
+    .Lives:before{content: 'Životy:';}
+    .Speed:before{content: 'Rychlost:';}
+    .Bombs:before{content: 'Bomby:';}
+    .Power:before{content: 'Síla:';}
+    .Speed{margin-bottom: 8px;}
   }
 
   .OtherPlayers{
     grid-row: 2 / 3;
     grid-column: 2 / 3;
     display: flex;
+
+    p{
+      margin: auto;
+      line-height: 2;
+      font-size: 24px;
+
+      b{
+        font-size: 32px;
+        font-weight: inherit;
+      }
+    }
 
     .PlayerAvatar{
       margin-right: 48px;

@@ -9,30 +9,31 @@ import Game from './screens/Game';
 import { API } from './logic/API';
 import { ServerEventType } from './enums/ServerEventType';
 import { Lobby as LobbyModel } from "./models/Lobby";
-import { GameManager } from './logic/GameManager';
+import { GameManager, GameManagerState } from './logic/GameManager';
 import { ClientEventType } from './enums/ClientEventType';
 import Connecting from './screens/Connecting';
+import Joining from './screens/Joining';
+import Disconnected from './screens/Disconnected';
 
 interface AppState{
   ServerConnected: boolean;
+  WasConnectedBefore: boolean;
 }
 
 class App extends React.Component<RouteComponentProps, AppState>{
   state: AppState = {
-    ServerConnected: false
+    ServerConnected: false,
+    WasConnectedBefore: false
   }
 
   componentDidMount(){
     API.Connected(() => {
-      this.setState({ServerConnected: true});
+      this.setState({ServerConnected: true, WasConnectedBefore: true});
       API.SendEvent({Type: ClientEventType.ChangeName, Data: { Nick: GameManager.Nick}});
     });
 
     API.Disconnected(() => {
       this.setState({ServerConnected: false})
-      //this.props.history.push("/");
-      //API.Connect();
-      // TODO dotaz na znovupřipojení
     });
 
     API.Subscribe(ServerEventType.LobbyJoin, (data) => this.ReactToLobbyJoin(data));
@@ -40,6 +41,7 @@ class App extends React.Component<RouteComponentProps, AppState>{
   }
 
   private ReactToLobbyJoin(lobby: LobbyModel){
+    GameManager.State = GameManagerState.Lobby;
     if(GameManager.CurrentLobby){
       console.error("Nelze se připojit k lobby, když už je součástí lobby.");
       return;
@@ -50,6 +52,7 @@ class App extends React.Component<RouteComponentProps, AppState>{
   }
 
   private ReactToLobbyLeave(){
+    GameManager.State = GameManagerState.None;
     this.props.history.replace(`/list`);
     if(!GameManager.CurrentLobby){
       console.info("Nelze se odpojit z lobby, protože nejsme v lobby.");
@@ -59,33 +62,31 @@ class App extends React.Component<RouteComponentProps, AppState>{
     GameManager.CurrentLobby = undefined;
   }
 
-  render (){
+  renderAppContent(){
     if(this.state.ServerConnected) return (
-      <div className="App">
-        <Switch>
-          <Route exact path="/connecting">
-            <Connecting/>
-          </Route>
-          <Route exact path="/list">
-            <LobbyList/>
-          </Route>
-          <Route exact path="/:id/game">
-            <Game/>
-          </Route>
-          <Route exact path="/:id">
-            <Lobby/>
-          </Route>
-          <Route exact path="/">
-            <MainPage />
-          </Route>
-        </Switch>
-      </div>
+      <Switch>
+        <Route exact path="/joining">
+          <Joining/>
+        </Route>
+        <Route exact path="/list">
+          <LobbyList/>
+        </Route>
+        <Route exact path="/:id/game">
+          <Game/>
+        </Route>
+        <Route exact path="/:id">
+          <Lobby/>
+        </Route>
+        <Route exact path="/">
+          <MainPage />
+        </Route>
+      </Switch>
     );
-    else return (
-      <div className="App">
-        Wait, server se připojuje...
-      </div>
-    );
+    else return this.state.WasConnectedBefore ? <Disconnected/> : <Connecting/>;
+  }
+
+  render (){
+    return <div className="App">{this.renderAppContent()}</div>
   }
 }
 

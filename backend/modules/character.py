@@ -6,13 +6,16 @@
 # Author: Michal Krůl
 
 class Character:
-    def __init__(self, name: str, speed: int, power: int, maxLife: int, maxBomb: int, appearance):
+    def __init__(self, name: str, speed: int, power: int, maxLife: int, maxBomb: int, id: str):
         self.name = name
         self.speed = speed
         self.power = power
         self.maxLife = maxLife
         self.maxBomb = maxBomb
-        self.appearance = appearance
+        self.id = id
+
+    def getName(self):
+        return self.name
 
     def getSpeed(self):
         return self.speed
@@ -26,13 +29,13 @@ class Character:
     def getMaxBomb(self):
         return self.maxBomb
 
-    def getAppearance(self):
-        return self.appearance
+    def getID(self):
+        return self.id
 
 #Default:
 Characters = {
-"Scout" : Character("Scout", 1, 0, 0, -1, None),
-"Destroyer" : Character("Destroyer", 0, 1, -1, 0, None),
-"Regular" : Character("Regular", 0, 0, 0, 0, None),
-"Bomber" : Character ("Bomber", -1, 0, 0, 1, None)
+"scout" : Character("Skaut", 1, 0, 0, -1, "scout"),
+"destroyer" : Character("Ničitel", 0, 1, -1, 0, "destroyer"),
+"regular" : Character("Normální", 0, 0, 0, 0, "regular"),
+"bomber" : Character ("Ituga", -1, 0, 0, 1, "bomber")
 }

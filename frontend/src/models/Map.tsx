@@ -1,8 +1,7 @@
 import { MapObject } from "./MapObject";
-import { Observable } from "./Observable";
 
-export interface Map extends Observable{
+export interface Map{
+  ID: string;
   Name: string;
   Objects: MapObject[];
-  // TODO Pozadí?
 }

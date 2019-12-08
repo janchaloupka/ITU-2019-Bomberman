@@ -1,7 +1,6 @@
 import { MapObject } from "./MapObject";
-import { Observable } from "./Observable";
 
-export interface Bomb extends MapObject, Observable{
+export interface Bomb extends MapObject{
   Power: number;
   Countdown: number;
 }

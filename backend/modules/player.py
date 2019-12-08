@@ -6,7 +6,7 @@
 # Author: Michal Krůl
 # TODO Vyřešit powerupy
 
-from backend.modules.character import Character
+from backend.modules.character import Character, Characters
 from backend.modules.position import Position
 
 class Player(Position):
@@ -17,7 +17,7 @@ class Player(Position):
         self.nick = nick
         self.remainingLife = 0
         self.position: Position = None
-        self.character: Character = None
+        self.character: Character = Characters["regular"]
 
     def getID(self) -> int:
         return self.ID
@@ -47,11 +47,14 @@ class Player(Position):
         return self.character.getMaxBomb()
 
     def getAppearance(self):
-        return self.character.getAppearance()
+        return self.character.getID()
 
     def setCharacter(self, character: Character) -> None:
         self.character = character
         self.resetRemainingLife()
+    
+    def getCharacterName(self):
+        return self.character.getName()
 
     def getPosition(self) -> Position:
         return self.position

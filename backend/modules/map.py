@@ -8,38 +8,38 @@
 from typing import List
 from backend.modules.obstacle import Obstacle
 import json
+import os
 
 class Map:
-    width: int = 21
-    height: int = 21
-    
-    def __init__(self, name):
-        with open('../maps/Map1.txt') as outfile:
+    width: int = 11
+    height: int = 9
+
+    def __init__(self, id):
+        path = os.path.join(os.path.dirname(__file__), '..', 'maps', id)
+        with open(path) as outfile:
             data = json.load(outfile)
-            for m in data:
-                if m['Name'] == name:
-                    self.name = m['Name']
-                    self.background = m['Background']
+            self.id = id
+            self.name = data['Name']
                     
         self.obstacles: List[Obstacle] = []
         
 
     def generateObstacles(self):
         '''Dle typu mapy vytvori prekazky'''
-        if (self.name == "Map1"):
+        if (self.id == "IceMap"):
             for x in range(1, self.width ,2):
                 for y in range(1, self.height, 2):
                     self.obstacles.append(Obstacle(x, y))
-        if (self.name == "Map2"):
+        if (self.id == "Map2"):
             pass
-        if (self.name == "Map3"):
+        if (self.id == "Map3"):
             pass
-
-    def getBackground(self):
-        return self.background
 
     def getObstacles(self) -> List[Obstacle]:
         return self.obstacles
 
     def getName(self) -> str:
         return self.name
+
+    def getID(self) -> str:
+        return self.id
