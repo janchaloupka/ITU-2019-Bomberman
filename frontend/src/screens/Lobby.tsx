@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, FocusEvent, ChangeEvent } from "react";
+import React, { KeyboardEvent, FocusEvent } from "react";
 import './Lobby.scss';
 import '../assets/player_invert.png';
 import PlayerAvatar from "../components/PlayerAvatar";
@@ -27,14 +27,14 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
   private subscribedUpdate = (() => {});
 
   componentDidMount(){
+    console.log("Hello World");
     let id = (this.props.match.params as {id: string}).id;
-
     if(id === "new"){
       API.SendEvent({Type: ClientEventType.CreateLobby});
-      this.props.history.replace("/connecting");
+      this.props.history.replace("/");
     }else if(!GameManager.CurrentLobby){
       API.SendEvent({Type: ClientEventType.JoinLobby, Data: {ID: parseInt(id, 10)}});
-      this.props.history.replace("/connecting");
+      this.props.history.replace("/"); // TODO přesměrovat na dialog "připojuje se..."
     }else{
       this.subscribedUpdate = () => this.LobbyUpdate();
       GameManager.SubscribeLobbyChange(this.subscribedUpdate);
@@ -44,12 +44,11 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
 
   componentWillUnmount(){
     API.Unsubscribe(ServerEventType.LobbyUpdate, this.subscribedUpdate);
-    if(!GameManager.CurrentLobby) return;
-    API.SendEvent({Type: ClientEventType.LeaveLobby});
   }
 
   private LobbyUpdate(){
     if(!GameManager.CurrentLobby) return;
+    console.log(GameManager.CurrentLobby);
     this.setState({
       ID: GameManager.CurrentLobby.ID,
       NumberOfRounds: GameManager.CurrentLobby.NumberOfRounds,
@@ -96,43 +95,10 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     API.SendEvent({Type: ClientEventType.LeaveLobby});
   }
 
-  renderSelf(){
-    let player = this.state.Players.find((p) => p.ID === this.state.YourID);
-    if(!player) return;
-    let i = this.state.Players.indexOf(player);
-
-    return (<PlayerAvatar key={player.ID} name={player.Nick} character="" color={50*i} />);
-  }
-
   renderOpponents(){
-    let players = this.state.Players.filter((p) => p.ID !== this.state.YourID);
-
-    return players.map((p) => {
-      let i = this.state.Players.indexOf(p);
-      return (<PlayerAvatar key={p.ID} name={p.Nick} character="" color={50*i} />)
-    });
-  }
-
-  changeNoOfRounds(event: ChangeEvent<HTMLInputElement>){
-    if(event.target.valueAsNumber === this.state.NumberOfRounds) return;
-    API.SendEvent({
-      Type: ClientEventType.UpdateLobbySettings,
-      Data: {
-        ID: this.state.ID,
-        NumberOfRounds: event.target.valueAsNumber
-      }
-    });
-  }
-
-  changeTimeLimit(event: ChangeEvent<HTMLInputElement>){
-    if(event.target.valueAsNumber === this.state.TimeLimit) return;
-    API.SendEvent({
-      Type: ClientEventType.UpdateLobbySettings,
-      Data: {
-        ID: this.state.ID,
-        TimeLimit: event.target.valueAsNumber
-      }
-    });
+    return this.state.Players.map((p, i) => (
+      <PlayerAvatar key={p.ID} name={p.Nick} character="" color={50*i} />
+    ));
   }
 
   render(){
@@ -142,15 +108,15 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
           <section className="GameOptions">
             <h2>Herní místnost</h2>
             <label>
-              <input value={this.state.NumberOfRounds} onChange={(e) => this.changeNoOfRounds(e)} type="range" min="1" max="3" step="1"/>
+              <input type="range" min="1" max="3" step="1"/>
               <span>Počet kol</span>
             </label>
-            <div className="Value">{this.state.NumberOfRounds}</div>
+            <div className="Value">1</div>
             <label>
-              <input value={this.state.TimeLimit} onChange={(e) => this.changeTimeLimit(e)} type="range" min="30" max="240" step="30"/>
+              <input type="range" min="30" max="240" step="30"/>
               <span>Časový limit kola</span>
             </label>
-            <div className="Value">{this.state.TimeLimit}s</div>
+            <div className="Value">30s</div>
           </section>
 
           <section className="Map">
@@ -165,7 +131,7 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
           </section>
 
           <section className="CurrentPlayer">
-            { this.renderSelf() }
+            <PlayerAvatar name="Honza" character="" color={0} />
             <button className="Small">&lt;</button>
             <span className="Name">Název postavy</span>
             <button className="Small">&gt;</button>

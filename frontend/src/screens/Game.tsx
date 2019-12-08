@@ -1,13 +1,23 @@
-import React from "react";
+import React, { Props } from "react";
 import './Game.scss';
 import PlayerAvatar from "../components/PlayerAvatar";
 import HealthBar from "../components/HealthBar";
 import Countdown from 'react-countdown-now';
 import Bomb from "../components/Bomb";
-import { API } from '../logic/API';
-import { ClientEventType } from '../enums/ClientEventType';
+import { GameManager } from "../logic/GameManager";
 
 class Game extends React.Component{
+
+    state={
+        timeLimit:0
+    }
+
+    componentDidMount(){
+        if(!GameManager.CurrentLobby) return;
+        this.setState({
+            timeLimit: GameManager.CurrentLobby.TimeLimit
+        })
+    }
 
   render(){
     return(
@@ -24,7 +34,7 @@ class Game extends React.Component{
             </section>
 
             <section className="Countdown">
-                <Countdown date={Date.now() + 10000}/>
+                <Countdown date={Date.now() + this.state.timeLimit * 1000}/>
             </section>
 
             <section className="OtherPlayers">
