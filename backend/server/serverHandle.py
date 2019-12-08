@@ -101,7 +101,7 @@ def updateGame(data):
 
 def startGame(data):
     '''Zmeni stav z JeVLobby na HrajeSe, vygeneruje barelly a pozice'''
-    game = Games[data['Game']]
+    game = Games[data['ID']]
 
     Lobby.remove(game)
     notifySubscribed(Change("LobbyListItemRemove", game))

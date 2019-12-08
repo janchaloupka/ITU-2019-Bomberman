@@ -84,8 +84,8 @@ class Game:
         self.isLobby = False
         self.currentRound = 1
         obstacles = self.map.getObstacles()
-        generateBarrels()
-        generatePlayerPositions()
+        self.generateBarrels()
+        self.generatePlayerPositions()
         return obstacles, self.barrels
 
     def generateBarrels(self):
