@@ -7,7 +7,7 @@ export interface Lobby{
   YourID: number;
   NumberOfRounds: number;
   TimeLimit: number;
-  Map?: Map;
+  Map: Map;
   Players: Player[];
   //Games?: Game[];
 }

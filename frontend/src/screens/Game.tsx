@@ -19,7 +19,8 @@ class Game extends React.Component<RouteComponentProps, GameState>{
         Players: [],
         YourID: 0,
         ID: 0,
-        NumberOfRounds: 0
+        NumberOfRounds: 0,
+        Map: {ID: "", Objects: [], Name: ""}
     }
 
     componentDidMount(){
@@ -33,7 +34,7 @@ class Game extends React.Component<RouteComponentProps, GameState>{
 
         return players.map((p) => {
           let i = this.state.Players.indexOf(p);
-          return (<section className="OtherPlayers"><PlayerAvatar key={p.ID} name={p.Nick} character={p.Character.ID} color={100*i} /> <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" /></section>) 
+          return (<section className="OtherPlayers"><PlayerAvatar key={p.ID} name={p.Nick} character={p.Character.ID} color={100*i} /> <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" /></section>)
         });
     }
 
@@ -49,9 +50,9 @@ class Game extends React.Component<RouteComponentProps, GameState>{
                     <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
                     <Bomb bombsLeft={3}/>
                 </section>
-            </section>   
+            </section>
         );
-    }    
+    }
 
     render(){
         return(
@@ -60,15 +61,15 @@ class Game extends React.Component<RouteComponentProps, GameState>{
 
             <div className = 'Bar'>
 
-            { this.renderSelf() }                
+            { this.renderSelf() }
 
                 <section className="Countdown">
                     <Countdown date={Date.now() + this.state.TimeLimit * 1000}/>
                 </section>
 
-                
+
                 { this.renderOpponents() }
-                
+
             </div>
         </div>
         );}

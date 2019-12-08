@@ -33,7 +33,7 @@ class App extends React.Component<RouteComponentProps, AppState>{
     });
 
     API.Disconnected(() => {
-      this.setState({ServerConnected: false})
+      this.setState({ServerConnected: false});
     });
 
     API.Subscribe(ServerEventType.LobbyJoin, (data) => this.ReactToLobbyJoin(data));
