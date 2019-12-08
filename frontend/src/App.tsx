@@ -35,16 +35,27 @@ class App extends React.Component<RouteComponentProps, AppState>{
     });
 
     API.Subscribe(ServerEventType.LobbyJoin, (data) => this.ReactToLobbyJoin(data));
+    API.Subscribe(ServerEventType.LobbyLeave, () => this.ReactToLobbyLeave());
   }
 
   private ReactToLobbyJoin(lobby: LobbyModel){
-    this.props.history.replace(`/${lobby.ID}`);
     if(GameManager.CurrentLobby){
       console.error("Nelze se připojit k lobby, když už je součástí lobby.");
       return;
     }
 
     GameManager.CurrentLobby = lobby;
+    this.props.history.replace(`/${lobby.ID}`);
+  }
+
+  private ReactToLobbyLeave(){
+    this.props.history.replace(`/list`);
+    if(!GameManager.CurrentLobby){
+      console.error("Nelze se odpojit z lobby, protože nejsme v lobby.");
+      return;
+    }
+
+    GameManager.CurrentLobby = undefined;
   }
 
   render (){
