@@ -10,6 +10,7 @@ import { API } from './logic/API';
 import { ServerEventType } from './enums/ServerEventType';
 import { Lobby as LobbyModel } from "./models/Lobby";
 import { GameManager } from './logic/GameManager';
+import { ClientEventType } from './enums/ClientEventType';
 
 interface AppState{
   ServerConnected: boolean;
@@ -21,13 +22,23 @@ class App extends React.Component<RouteComponentProps, AppState>{
   }
 
   componentDidMount(){
-    API.Connected(() => this.setState({ServerConnected: true}));
+    API.Connected(() => {
+      this.setState({ServerConnected: true});
+      API.SendEvent({Type: ClientEventType.ChangeName, Data: { Nick: GameManager.Nick}});
+    });
+
+    API.Disconnected(() => {
+      this.setState({ServerConnected: false})
+      //this.props.history.push("/");
+      //API.Connect();
+      // TODO dotaz na znovupřipojení
+    });
 
     API.Subscribe(ServerEventType.LobbyJoin, (data) => this.ReactToLobbyJoin(data));
   }
 
   private ReactToLobbyJoin(lobby: LobbyModel){
-    this.props.history.replace(`/game/${lobby.ID}`);
+    this.props.history.replace(`/${lobby.ID}`);
     if(GameManager.CurrentLobby){
       console.error("Nelze se připojit k lobby, když už je součástí lobby.");
       return;
@@ -40,16 +51,16 @@ class App extends React.Component<RouteComponentProps, AppState>{
     if(this.state.ServerConnected) return (
       <div className="App">
         <Switch>
-          <Route path="/game/:id/inProgress">
-            <Game/>
-          </Route>
-          <Route path="/game/:id">
-            <Lobby/>
-          </Route>
-          <Route path="/games">
+          <Route exact path="/list">
             <LobbyList/>
           </Route>
-          <Route path="/">
+          <Route exact path="/:id/game">
+            <Game/>
+          </Route>
+          <Route exact path="/:id">
+            <Lobby/>
+          </Route>
+          <Route exact path="/">
             <MainPage />
           </Route>
         </Switch>

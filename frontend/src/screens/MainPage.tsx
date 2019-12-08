@@ -10,8 +10,8 @@ class MainPage extends React.Component{
       <div className="ScreenContent">
         <h1>Bomberman online</h1>
         <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas aliquet accumsan leo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Sed ac dolor sit amet purus malesuada congue. Praesent id justo in neque elementum ultrices.</p>
-        <Link to="/games" className="Button">Vyhledat hry</Link>
-        <Link to="/game/new" className="Button Secondary">Založit hru</Link>
+        <Link to="/list" className="Button">Vyhledat hry</Link>
+        <Link to="/new" className="Button Secondary">Založit hru</Link>
       </div>
     </div>
     )

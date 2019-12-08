@@ -38,13 +38,16 @@ def subscribeToLobyList(connection):
     """Prida hrace do seznamu subscribe, odpovi zpravou:
     {'Type': "LobbyListItemNew", 'Data' : {GameID, PlayerCount}}"""
     Subscribed.append(Connections[connection])
-    data = {}
-    x = 0
+    data = []
     for g in Lobby:
-        data[x] = {
-            'GameID' : g.getID(),
-            'PlayerCount' : len(g.getPlayers())
-        }
+        if len(g.getPlayers()) > 0:
+            data.append({
+                'ID' : g.getID(),
+                'PlayerCount' : len(g.getPlayers()),
+                'HostName' : g.getPlayers()[0].getNick(),
+                'MapName' : g.getMap().getName()
+            })
+    
     message = {
         'Type': "LobbyListItemNew",
         'Data': data
@@ -64,7 +67,7 @@ def deletePlayer(obj):
     Subscribed.remove(Players[ID])
     objekt = Players[ID]
     del Players[ID]
-    for g in Games:
+    for g in Games.values():
         if objekt in g.getPlayers():
             g.getPlayers().remove(objekt)
             checkGame(g)
@@ -163,14 +166,15 @@ def addToLobby(player, data):
     
     response = {}
     response['Type'] = "LobbyJoin"
-    players = {}
-    x = 1
+    players = []
     for p in game.getPlayers():
-        i = p.getID()
-        players[x] = i
-        x += 1
-    data = {"NumberOfRounds" : game.getNoOfRounds(), "TimeLimit" : game.getTimeLimit(), "Players" : players}
+        players.append({
+            "ID": p.getID(),
+            "Nick": p.getNick()
+        })
+    data = {"ID": game.getID(), "NumberOfRounds" : game.getNoOfRounds(), "TimeLimit" : game.getTimeLimit(), "Players" : players}
     response['Data'] = data
+    notifySubscribed(Change("LobbyListItemChange", game))
     notifyAboutPlayer(game.getID(), Connections[player].getID(), "PlayerJoin")
     return response
 
@@ -194,6 +198,7 @@ def removePlayerFromGame(conn):
     for g in Games:
         if player in g.getPlayers:
             g.removePlayer(player)
+            notifySubscribed(Change("LobbyListItemChange", g))
             notifyAboutPlayer(g.getID(), player.getID(), "PlayerLeave")
 
 def processMessage(connection, obj):
@@ -230,14 +235,14 @@ def processMessage(connection, obj):
         game = createGame(connection)
         response = {}
         response['Type'] = "LobbyJoin"
-        players = {}
-        x = 1
+        players = []
         for p in game.getPlayers():
-            i = p.getID()
-            players[x] = i
-            x += 1
+            players.append({
+                "ID": p.getID(),
+                "Nick": p.getNick()
+            })
         data = {"ID": game.getID(), "NumberOfRounds" : 0, "TimeLimit" : 0, "Players" : players}
-        response['Data'] = data    
+        response['Data'] = data
         return response
 
     elif (obj['Type'] == "UpdateLobbySettings"):
@@ -314,7 +319,7 @@ def notifyGameMembers(gameID):
 def notifyAboutPlayer(gameId, playerID, event_type):
     """Upozorni ostatni cleny hry o hraci (join/leave)"""
     for conn in Connections.keys():
-        if (Connections[conn] in Games[gameId].players and Connections[conn] != Games[gameId].players[0]):
+        if (Connections[conn] in Games[gameId].players and Connections[conn] != Players[playerID]):
             message = {}
             message['Type'] = event_type
             data = {"Player" : playerID}
@@ -330,7 +335,7 @@ def notifySubscribed(change):
         if Connections[conn] in Subscribed:
             if (event_type == "LobbyListItemRemove"):
                 data = {
-                    'GameId' : game.getID()
+                    'ID' : game.getID()
                 }
             else:
                 data = {
