@@ -337,7 +337,7 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "ChangeMap"):
         '''Zavola zmenu mapy
         ocekava: {Type : "ChangeMap", Data : {Game : GameId, Map : MapName}}'''
-        return changeGameMap(obj['Data'])
+        changeGameMap(obj['Data'])
 
     elif (obj['Type'] == "LeaveLobby"):
         '''Zavola odstraneni hrace z hry a opet se prihlasi k odebirani lobby listu
