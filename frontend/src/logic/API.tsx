@@ -103,4 +103,4 @@ class ServerCommunication{
   //#endregion
 }
 
-export const API = new ServerCommunication(`ws://zakladna.eu:9000/`);
+export const API = new ServerCommunication(`ws://${window.location.hostname}:9000/`);
