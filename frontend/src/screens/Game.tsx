@@ -1,4 +1,4 @@
-import React, { Props } from "react";
+import React from "react";
 import './Game.scss';
 import PlayerAvatar from "../components/PlayerAvatar";
 import HealthBar from "../components/HealthBar";
@@ -25,6 +25,7 @@ class Game extends React.Component<RouteComponentProps, GameState>{
 
     componentDidMount(){
         if(!GameManager.CurrentLobby) return;
+        console.log(GameManager.CurrentLobby.Players);
         this.setState({
             ID: GameManager.CurrentLobby.ID,
             NumberOfRounds: GameManager.CurrentLobby.NumberOfRounds,
@@ -32,10 +33,13 @@ class Game extends React.Component<RouteComponentProps, GameState>{
             YourID: GameManager.CurrentLobby.YourID,
             Players: GameManager.CurrentLobby.Players,
             Map: GameManager.CurrentLobby.Map
+          }, () => {
+            console.log("Game mount begun");
+            
+            console.log(this.state.Players);
           });
 
-          console.log("Game mounte begun");
-          console.log(this.state.Players);
+          
 
         let updatedPlayers = this.state.Players;
         for (let i = 0; i < this.state.Players.length; i++){
