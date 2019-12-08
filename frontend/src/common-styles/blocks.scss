@@ -1,6 +1,6 @@
 .SafeArea, .ScreenContent{
-  max-width: 1216px;
-  max-height: 800px;
+  width: 1216px;
+  height: 800px;
 }
 
 .ScreenContent{
@@ -16,9 +16,9 @@
   image-rendering: pixelated;
 }*/
 
-@media(max-width: 1300px), (max-height: 900px){
+/*@media(max-width: 1300px), (max-height: 900px){
   .SafeArea, .ScreenContent{
     max-width: 912px;
     max-height: 600px;
   }
-}
+}*/

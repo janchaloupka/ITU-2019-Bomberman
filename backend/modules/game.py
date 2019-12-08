@@ -19,7 +19,8 @@ class Game:
         self.isLobby = True
         self.timeLimit = 60
         self.noOfRounds = 1
-        self.map: Map = mockMap["Map1"]
+        self.currentRound = 0
+        self.map: Map = Map("Map1")
         self.players: List[Player] = []
         self.barrels: List[Barrel] = []
         self.bombs: List[Bomb] = []
@@ -69,6 +70,9 @@ class Game:
     def getIsLobby(self) -> bool:
         return self.isLobby
 
+    def getCurrentRound(self):
+        return self.currentRound
+
     def start(self):
         '''
         Predpoklada se nasledujici sit
@@ -78,6 +82,7 @@ class Game:
         y2|__|__|__
         '''
         self.isLobby = False
+        self.currentRound = 1
         self.map.generateObstacles()
         obstacles = self.map.getObstacles()
         generateBarrels()

@@ -10,8 +10,6 @@
     display: grid;
     grid-template-columns: auto max-content;
     grid-template-rows: auto max-content max-content;
-    width: 100%;
-    height: 100%;
   }
 
   .GameOptions{
@@ -123,6 +121,7 @@
     height: 96px;
     margin: -24px;
     margin-top: 24px;
+    position: relative;
   }
 
   button.Copy{
@@ -169,6 +168,39 @@
         transform: none;
         opacity: 1;
       }
+    }
+  }
+
+  label.Nick{
+    position: absolute;
+    left: 24px;
+    top: 0;
+    height: 100%;
+    width: 20%;
+    padding-left: 80px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    background-image: url('../assets/player_invert.png');
+    background-repeat: no-repeat;
+    background-size: 64px 64px;
+    background-position: 0 center;
+    image-rendering: pixelated;
+
+    input{
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      border-bottom: 2px solid currentColor;
+      height: 32px;
+      font-size: 28px;
+    }
+
+    span{
+      order: -1;
+      font-size: 16px;
+      opacity: 0.8;
     }
   }
 }
