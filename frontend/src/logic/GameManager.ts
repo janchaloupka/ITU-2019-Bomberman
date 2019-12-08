@@ -42,6 +42,7 @@ class GameManagerClass{
 
     this.CurrentLobby.NumberOfRounds = data.NumberOfRounds;
     this.CurrentLobby.TimeLimit = data.TimeLimit;
+    this.CurrentLobby.Map = data.Map;
 
     this.lobbyObserver.forEach(c => c());
   }

@@ -231,7 +231,7 @@ def changeGameMap(data):
     game = Games[data['Game']]
     mapa = data['Map']
     game.setMap(Map(mapa))
-    notifyGameMembers(game.getId())
+    notifyGameMembers(game.getID())
 
 def removePlayerFromGame(player):
     '''Odstrani hrace z hry, upozorni ostatni hrace'''
