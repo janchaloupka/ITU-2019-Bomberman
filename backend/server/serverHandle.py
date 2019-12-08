@@ -10,7 +10,6 @@ from backend.modules.id import ID
 from backend.modules.game import Game
 from backend.modules.map import Map
 from backend.modules.character import Characters
-from backend.modules.map import mockMap
 from backend.modules.bomb import Bomb
 from backend.modules.change import Change
 from threading import Timer
