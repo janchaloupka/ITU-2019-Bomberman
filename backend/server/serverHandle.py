@@ -61,6 +61,7 @@ def deletePlayer(obj):
     '''Smaze hrace ze seznamu a znici objekt'''
     ID = Connections[obj].getID()
     del Connections[obj]
+    Subscribed.remove(Players[ID])
     objekt = Players[ID]
     del Players[ID]
     for g in Games:
