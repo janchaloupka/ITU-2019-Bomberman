@@ -83,7 +83,6 @@ class Game:
         '''
         self.isLobby = False
         self.currentRound = 1
-        self.map.generateObstacles()
         obstacles = self.map.getObstacles()
         generateBarrels()
         generatePlayerPositions()

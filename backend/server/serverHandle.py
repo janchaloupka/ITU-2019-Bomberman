@@ -61,7 +61,6 @@ def createPlayer(obj):
 
 def deletePlayer(obj):
     '''Smaze hrace ze seznamu a znici objekt'''
-    removePlayerFromGame(obj)
     ID = Connections[obj].getID()
     del Connections[obj]
     if (Players[ID] in Subscribed):
@@ -71,13 +70,14 @@ def deletePlayer(obj):
     vals = list(Games.values())
     for g in vals:
         if objekt in g.getPlayers():
-            g.getPlayers().remove(objekt)
+            removePlayerFromGame(obj)
             checkGame(g)
     del objekt
 
 def createGame(obj):
     '''Vytvori novou hru ve fazi lobby'''
     game = Game()
+    game.getMap().generateObstacles()
     game.addPlayer(Connections[obj])
     Games[game.getID()] = game
     Lobby.append(game)
@@ -187,11 +187,26 @@ def addToLobby(player, data):
                 "MaxBombs": p.getMaxBomb()
             }
         })
+    obstacles = []
+    for o in game.getMap().getObstacles():
+        obstacles.append({
+            'Type' : 'Obstacle',
+            'Collision' : True,
+            'Destroyable' : False,
+            'Background' : False,
+            'PosX' : o.getPosition().getX(),
+            'PosY' : o.getPosition().getY()
+        })
+    mapa = {
+        "ID" : game.getMap().getID(),
+        "Name" : game.getMap().getID(),
+        "Obstacles" : obstacles
+    }    
     data = {
         "ID": game.getID(), 
         "NumberOfRounds" : game.getNoOfRounds(), 
         "TimeLimit" : game.getTimeLimit(), 
-        "Map" : game.getMap().getName()
+        "Map" : mapa,
         "Players" : players,
         "YourID" : Connections[player].getID()
     }
@@ -262,7 +277,7 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "CreateLobby"):
         '''Zavola funkci vytvoreni hry, vytvori response typu s daty ID, timeLimit a Players
         ocekava {Type : "CreateLobby"}
-        Vraci: {"Type": "LobbyJoin", "Data": {"NumberOfRounds": noOfRounds, "TimeLimit": timeLimit, "Players": {"1": PlayerID}}}'''
+        Vraci: {"Type": "LobbyJoin", "Data": {"NumberOfRounds": noOfRounds, "TimeLimit": timeLimit, "Players": {"1": PlayerID}, "Map : {Name, ID, obstaces : {list}}"}}'''
         game = createGame(connection)
         response = {}
         response['Type'] = "LobbyJoin"
@@ -280,10 +295,26 @@ def processMessage(connection, obj):
                     "MaxBombs": p.getMaxBomb()
                 }
             })
+        obstacles = []
+        for o in game.getMap().getObstacles():
+            obstacles.append({
+                'Type' : 'Obstacle',
+                'Collision' : True,
+                'Destroyable' : False,
+                'Background' : False,
+                'PosX' : o.getPosition().getX(),
+                'PosY' : o.getPosition().getY()
+            })
+        mapa = {
+            "ID" : game.getMap().getID(),
+            "Name" : game.getMap().getID(),
+            "Obstacles" : obstacles
+        }
         data = {
             "ID": game.getID(), 
             "NumberOfRounds" : game.getNoOfRounds(), 
-            "TimeLimit" : game.getTimeLimit(), 
+            "TimeLimit" : game.getTimeLimit(),
+            "Map" : mapa, 
             "Players" : players,
             "YourID" : p.getID()
         }
