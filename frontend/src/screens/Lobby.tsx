@@ -28,8 +28,8 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
   private subscribedUpdate = (() => {});
 
   componentDidMount(){
+    console.log("Hello World");
     let id = (this.props.match.params as {id: string}).id;
-
     if(id === "new"){
       API.SendEvent({Type: ClientEventType.CreateLobby});
       GameManager.State = GameManagerState.Joining;
@@ -47,12 +47,11 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
 
   componentWillUnmount(){
     API.Unsubscribe(ServerEventType.LobbyUpdate, this.subscribedUpdate);
-    if(!GameManager.CurrentLobby) return;
-    API.SendEvent({Type: ClientEventType.LeaveLobby});
   }
 
   private LobbyUpdate(){
     if(!GameManager.CurrentLobby) return;
+    console.log(GameManager.CurrentLobby);
     this.setState({
       ID: GameManager.CurrentLobby.ID,
       NumberOfRounds: GameManager.CurrentLobby.NumberOfRounds,
@@ -167,15 +166,15 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
           <section className="GameOptions">
             <h2>Herní místnost</h2>
             <label>
-              <input value={this.state.NumberOfRounds} onChange={(e) => this.changeNoOfRounds(e)} type="range" min="1" max="3" step="1"/>
+              <input type="range" min="1" max="3" step="1"/>
               <span>Počet kol</span>
             </label>
-            <div className="Value">{this.state.NumberOfRounds}</div>
+            <div className="Value">1</div>
             <label>
-              <input value={this.state.TimeLimit} onChange={(e) => this.changeTimeLimit(e)} type="range" min="30" max="240" step="30"/>
+              <input type="range" min="30" max="240" step="30"/>
               <span>Časový limit kola</span>
             </label>
-            <div className="Value">{this.state.TimeLimit}s</div>
+            <div className="Value">30s</div>
           </section>
 
           <section className="Map">
