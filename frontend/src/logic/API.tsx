@@ -57,10 +57,12 @@ class ServerCommunication{
 
   public Connected(callback: () => void){
     this.OnOpenObservers.push(callback);
+    if(this.Socket.readyState === WebSocket.OPEN) callback();
   }
 
   public Disconnected(callback: () => void){
     this.OnCloseObservers.push(callback);
+    if(this.Socket.readyState !== WebSocket.OPEN) callback();
   }
 
   public SendEvent(event: ClientEvent){
