@@ -1,0 +1,5 @@
+[
+    {"Name": "Map1", "Background": "map1.png"}, 
+    {"Name": "Map2", "Background": "map2.png"}, 
+    {"Name": "Map3", "Background": "map3.png"}
+]
