@@ -101,7 +101,7 @@ def updateGame(data):
 
 def startGame(data):
     '''Zmeni stav z JeVLobby na HrajeSe, vygeneruje barelly a pozice'''
-    game = Games[data['Game']]
+    game = Games[data['ID']]
 
     Lobby.remove(game)
     notifySubscribed(Change("LobbyListItemRemove", game))
@@ -504,9 +504,9 @@ def endOfRound(game):
         }
     }
     for p in game.getPlayers():
-        for conn in Connections.keys:
+        for conn in Connections.keys():
             if p == Connections[conn]:
                 conn.notify(response)
-    if not game.getCurrentRound == game.getNoOfRounds:
+    if not game.getCurrentRound() == game.getNoOfRounds():
         game_timer = Timer(game.getTimeLimit(), endOfRound, [game])
         game_timer.start()
