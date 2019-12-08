@@ -62,17 +62,16 @@ def createPlayer(obj):
 def deletePlayer(obj):
     '''Smaze hrace ze seznamu a znici objekt'''
     ID = Connections[obj].getID()
-    del Connections[obj]
     if (Players[ID] in Subscribed):
         Subscribed.remove(Players[ID])
     objekt = Players[ID]
-    del Players[ID]
     vals = list(Games.values())
     for g in vals:
         if objekt in g.getPlayers():
             removePlayerFromGame(objekt)
             checkGame(g)
-    del objekt
+    del Players[ID]
+    del Connections[obj]
 
 def createGame(obj):
     '''Vytvori novou hru ve fazi lobby'''
@@ -238,8 +237,9 @@ def removePlayerFromGame(player):
     '''Odstrani hrace z hry, upozorni ostatni hrace'''
     for g in Games.values():
         if player in g.getPlayers():
-            notifyAboutPlayer(g.getID(), player, "PlayerLeave")
             g.removePlayer(player)
+            notifyAboutPlayer(g.getID(), player, "PlayerLeave")
+
 
 def processMessage(connection, obj):
     '''Process message'''
@@ -391,7 +391,7 @@ def notifyAboutPlayer(gameId, player, event_type):
     """Upozorni ostatni cleny hry o hraci (join/leave)"""
     if len(Games[gameId].getPlayers()) != 0:
         for conn in Connections.keys():
-            if (Connections[conn] in Games[gameId].players and (Connections[conn] != Players[player.getID()] or event_type != "PlayerJoin")):
+            if (Connections[conn] in Games[gameId].getPlayers() and (Connections[conn] != Players[player.getID()] or event_type != "PlayerJoin")):
                 message = {}
                 message['Type'] = event_type
                 data = {
