@@ -5,7 +5,7 @@ import HealthBar from "../components/HealthBar";
 import Countdown from 'react-countdown-now';
 import Bomb from "../components/Bomb";
 import { GameManager } from "../logic/GameManager";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import { Lobby as LobbyModel } from "../models/Lobby";
 
 interface GameState extends LobbyModel{
@@ -63,4 +63,4 @@ class Game extends React.Component<RouteComponentProps, GameState>{
         );}
 }
 
-export default Game;
+export default withRouter(Game);
