@@ -61,6 +61,7 @@ def createPlayer(obj):
 
 def deletePlayer(obj):
     '''Smaze hrace ze seznamu a znici objekt'''
+    removePlayerFromGame(obj)
     ID = Connections[obj].getID()
     del Connections[obj]
     if (Players[ID] in Subscribed):
@@ -145,7 +146,7 @@ def startGame(data):
             'PosY' : p.getPosition().getY()
         }
     data = {
-        'MapObject' : objects
+        'Objects' : objects
     }
 
     response = {
@@ -313,7 +314,6 @@ def processMessage(connection, obj):
         ocekava ocekava: {Type : "LeaveLobby"}'''
         removePlayerFromGame(connection)
         return {"Type": "LobbyLeave"}
-        #subscribeToLobyList()
     
     elif (obj['Type'] == "StartGame"):
         '''Spusti spousteni hry
