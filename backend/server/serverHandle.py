@@ -55,7 +55,7 @@ def subscribeToLobyList(connection):
 
 def createPlayer(obj):
     '''Vytvori noveho hrace a prida ho do seznamu vsech pripojenych hracu, indentifikace pomoci WebsocketServerHandle'''
-    player = Player(ID().getID(), "")
+    player = Player(ID().getID(), "Hráč")
     Connections[obj] = player
     Players[player.getID()] = player 
 
@@ -176,7 +176,15 @@ def addToLobby(player, data):
     for p in game.getPlayers():
         players.append({
             "ID": p.getID(),
-            "Nick": p.getNick()
+            "Nick": p.getNick(),
+            "Character": {
+                "ID": p.getAppearance(),
+                "Name": p.getCharacterName(),
+                "Speed": p.getSpeed(),
+                "Power": p.getPower(),
+                "MaxLives": p.getMaxLife(),
+                "MaxBombs": p.getMaxBomb()
+            }
         })
     data = {
         "ID": game.getID(), 
@@ -193,10 +201,15 @@ def addToLobby(player, data):
 def setPlayerCharacter(conn, data):
     '''Pokud najde jmeno postavy ve vytvorenych postavach, prida tuto postavu k hraci'''
     player = Connections[conn]
-    char = data ['Name']
+    char = data['ID']
     for ch in Characters.keys():
         if (ch == char):
             player.setCharacter(Characters[ch])
+    
+    player = Connections[conn]
+    for g in Games.values():
+        if player in g.getPlayers():
+            notifyAboutPlayer(g.getID(), player, "PlayerCharacter")
 
 def changeGameMap(data):
     '''Nastavi mapu ke hre, mapa se nacita ze souboru, kde je odkaz na obrazek s pozadim (ulozeno jako string do Map.background)'''
@@ -255,7 +268,15 @@ def processMessage(connection, obj):
         for p in game.getPlayers():
             players.append({
                 "ID": p.getID(),
-                "Nick": p.getNick()
+                "Nick": p.getNick(),
+                "Character": {
+                    "ID": p.getAppearance(),
+                    "Name": p.getCharacterName(),
+                    "Speed": p.getSpeed(),
+                    "Power": p.getPower(),
+                    "MaxLives": p.getMaxLife(),
+                    "MaxBombs": p.getMaxBomb()
+                }
             })
         data = {
             "ID": game.getID(), 
@@ -281,9 +302,6 @@ def processMessage(connection, obj):
         '''Zavola pridani postavy k hraci, vraci PlayerCharacter odpoved
         ocekava {Type : "ChangeCharacter", Data : {Character : Name}}'''
         setPlayerCharacter(connection, obj['Data'])
-        response = {}
-        response['Type'] = "PlayerCharacter"
-        return response
 
     elif (obj['Type'] == "ChangeMap"):
         '''Zavola zmenu mapy
@@ -342,12 +360,20 @@ def notifyGameMembers(gameID):
 def notifyAboutPlayer(gameId, player, event_type):
     """Upozorni ostatni cleny hry o hraci (join/leave)"""
     for conn in Connections.keys():
-        if (Connections[conn] in Games[gameId].players and (Connections[conn] != Players[player.getID()] or event_type == "NameChange")):
+        if (Connections[conn] in Games[gameId].players and (Connections[conn] != Players[player.getID()] or event_type != "PlayerJoin")):
             message = {}
             message['Type'] = event_type
             data = {
                 "ID": player.getID(),
-                "Nick": player.getNick()
+                "Nick": player.getNick(),
+                "Character": {
+                    "ID": player.getAppearance(),
+                    "Name": player.getCharacterName(),
+                    "Speed": player.getSpeed(),
+                    "Power": player.getPower(),
+                    "MaxLives": player.getMaxLife(),
+                    "MaxBombs": player.getMaxBomb()
+                }
             }
             message['Data'] = data
             conn.notify(message)

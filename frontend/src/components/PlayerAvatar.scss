@@ -6,19 +6,34 @@
   .Avatar{
     width: 128px;
     height: 128px;
-    background-image: url('../assets/avatar_default.png');
     image-rendering: pixelated;
     background-size: 100%;
     transform: scale(1.25);
     margin: 16px;
+
+    &.destroyer{
+      background-image: url("../assets/avatar_destroyer.png");
+    }
+
+    &.bomber{
+      background-image: url("../assets/avatar_bomber.png");
+    }
+
+    &.scout{
+      background-image: url("../assets/avatar_scout.png");
+    }
+
+    &.regular{
+      background-image: url("../assets/avatar_regular.png");
+    }
   }
 
-  @media(max-width: 1300px), (max-height: 900px){
+  /*@media(max-width: 1300px), (max-height: 900px){
     .Avatar{
       transform: none;
       margin: 0;
     }
-  }
+  }*/
 
   .Name{
 

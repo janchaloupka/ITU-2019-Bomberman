@@ -1,16 +1,14 @@
 import React from "react";
 import './Connecting.scss';
 import '../assets/bcg.png';
-import { API } from "../logic/API";
-import { ClientEventType } from "../enums/ClientEventType";
 
 class Connecting extends React.Component{
   render(){
     return (
-    <div className="MainPage">
+    <div className="Connecting">
       <div className="ScreenContent">
-        <p>Připojování do hry...</p>
-        <button onClick={() => API.SendEvent({Type: ClientEventType.LeaveLobby})} className="Button">Zrušit</button>
+        <h2>Bomberman online</h2>
+        <p>Počkejte prosím, probíhá připojení k hernímu serveru...</p>
       </div>
     </div>
     )

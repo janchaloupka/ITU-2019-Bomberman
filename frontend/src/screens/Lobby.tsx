@@ -5,10 +5,11 @@ import PlayerAvatar from "../components/PlayerAvatar";
 import { RouteComponentProps, withRouter } from "react-router";
 import { API } from "../logic/API";
 import { ClientEventType } from "../enums/ClientEventType";
-import { GameManager } from "../logic/GameManager";
+import { GameManager, GameManagerState } from "../logic/GameManager";
 import { Lobby as LobbyModel } from "../models/Lobby";
 import { ServerEventType } from "../enums/ServerEventType";
 import { Link } from "react-router-dom";
+import { Characters } from "../models/Character";
 
 interface LobbyState extends LobbyModel{
   InviteCopied: boolean;
@@ -31,10 +32,12 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
 
     if(id === "new"){
       API.SendEvent({Type: ClientEventType.CreateLobby});
-      this.props.history.replace("/connecting");
+      GameManager.State = GameManagerState.Joining;
+      this.props.history.replace("/joining");
     }else if(!GameManager.CurrentLobby){
       API.SendEvent({Type: ClientEventType.JoinLobby, Data: {ID: parseInt(id, 10)}});
-      this.props.history.replace("/connecting");
+      GameManager.State = GameManagerState.Joining;
+      this.props.history.replace("/joining");
     }else{
       this.subscribedUpdate = () => this.LobbyUpdate();
       GameManager.SubscribeLobbyChange(this.subscribedUpdate);
@@ -92,6 +95,16 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     }
   }
 
+  changeCharacter(i: number){
+    let player = this.state.Players.find((p) => p.ID === this.state.YourID);
+    if(!player) return;
+
+    i = (Characters.length + Characters.indexOf(player.Character.ID) + i) % Characters.length;
+    API.SendEvent({Type: ClientEventType.ChangeCharacter, Data: {
+      ID: Characters[i]
+    }});
+  }
+
   leaveLobby(){
     API.SendEvent({Type: ClientEventType.LeaveLobby});
   }
@@ -101,15 +114,27 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     if(!player) return;
     let i = this.state.Players.indexOf(player);
 
-    return (<PlayerAvatar key={player.ID} name={player.Nick} character="" color={50*i} />);
+    return (
+      <>
+        <PlayerAvatar key={player.ID} name={player.Nick} character={player.Character.ID} color={100*i}/>
+        <span className="Name">{player.Character.Name}</span>
+        <div className="Lives">{ 3 + player.Character.MaxLives}</div>
+        <div className="Bombs">{ 3 + player.Character.MaxBombs}</div>
+        <div className="Power">{ player.Character.Speed > 0 ? "+" + player.Character.Speed : player.Character.Speed}</div>
+        <div className="Speed">{ player.Character.Power > 0 ? "+" + player.Character.Power : player.Character.Power}</div>
+        <button className="Small" onClick={() => this.changeCharacter(-1)}>&lt;</button>
+        <button className="Small" onClick={() => this.changeCharacter(1)}>&gt;</button>
+      </>
+    );
   }
 
   renderOpponents(){
     let players = this.state.Players.filter((p) => p.ID !== this.state.YourID);
+    if(players.length === 0) return <p>Čeká se na hráče...<br/>Adresa pro připojení: <b>{window.location.host}{window.location.pathname}</b></p>;
 
     return players.map((p) => {
       let i = this.state.Players.indexOf(p);
-      return (<PlayerAvatar key={p.ID} name={p.Nick} character="" color={50*i} />)
+      return (<PlayerAvatar key={p.ID} name={p.Nick} character={p.Character.ID} color={100*i} />)
     });
   }
 
@@ -166,9 +191,6 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
 
           <section className="CurrentPlayer">
             { this.renderSelf() }
-            <button className="Small">&lt;</button>
-            <span className="Name">Název postavy</span>
-            <button className="Small">&gt;</button>
           </section>
 
           <section className="OtherPlayers">
