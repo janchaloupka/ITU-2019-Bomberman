@@ -23,12 +23,12 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
     TimeLimit: 30,
     Players: [],
     YourID: 0,
+    Map: {ID: "", Objects: [], Name: ""}
   }
 
   private subscribedUpdate = (() => {});
 
   componentDidMount(){
-    console.log("Hello World");
     let id = (this.props.match.params as {id: string}).id;
     if(id === "new"){
       API.SendEvent({Type: ClientEventType.CreateLobby});
@@ -51,7 +51,6 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
 
   private LobbyUpdate(){
     if(!GameManager.CurrentLobby) return;
-    console.log(GameManager.CurrentLobby);
     this.setState({
       ID: GameManager.CurrentLobby.ID,
       NumberOfRounds: GameManager.CurrentLobby.NumberOfRounds,

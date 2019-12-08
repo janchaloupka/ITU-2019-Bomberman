@@ -70,13 +70,14 @@ def deletePlayer(obj):
     vals = list(Games.values())
     for g in vals:
         if objekt in g.getPlayers():
-            g.getPlayers().remove(objekt)
+            removePlayerFromGame(objekt)
             checkGame(g)
     del objekt
 
 def createGame(obj):
     '''Vytvori novou hru ve fazi lobby'''
     game = Game()
+    game.getMap().generateObstacles()
     game.addPlayer(Connections[obj])
     Games[game.getID()] = game
     Lobby.append(game)
@@ -145,7 +146,7 @@ def startGame(data):
             'PosY' : p.getPosition().getY()
         }
     data = {
-        'MapObject' : objects
+        'Objects' : objects
     }
 
     response = {
@@ -186,10 +187,26 @@ def addToLobby(player, data):
                 "MaxBombs": p.getMaxBomb()
             }
         })
+    obstacles = []
+    for o in game.getMap().getObstacles():
+        obstacles.append({
+            'Type' : 'Obstacle',
+            'Collision' : True,
+            'Destroyable' : False,
+            'Background' : False,
+            'PosX' : o.getPosition().getX(),
+            'PosY' : o.getPosition().getY()
+        })
+    mapa = {
+        "ID" : game.getMap().getID(),
+        "Name" : game.getMap().getID(),
+        "Obstacles" : obstacles
+    }    
     data = {
         "ID": game.getID(), 
         "NumberOfRounds" : game.getNoOfRounds(), 
         "TimeLimit" : game.getTimeLimit(), 
+        "Map" : mapa,
         "Players" : players,
         "YourID" : Connections[player].getID()
     }
@@ -217,14 +234,12 @@ def changeGameMap(data):
     mapa = data['Map']
     game.setMap(Map(mapa))
 
-def removePlayerFromGame(conn):
+def removePlayerFromGame(player):
     '''Odstrani hrace z hry, upozorni ostatni hrace'''
-    player = Connections[conn]
     for g in Games.values():
         if player in g.getPlayers():
-            g.removePlayer(player)
-            notifySubscribed(Change("LobbyListItemChange", g))
             notifyAboutPlayer(g.getID(), player, "PlayerLeave")
+            g.removePlayer(player)
 
 def processMessage(connection, obj):
     '''Process message'''
@@ -260,7 +275,7 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "CreateLobby"):
         '''Zavola funkci vytvoreni hry, vytvori response typu s daty ID, timeLimit a Players
         ocekava {Type : "CreateLobby"}
-        Vraci: {"Type": "LobbyJoin", "Data": {"NumberOfRounds": noOfRounds, "TimeLimit": timeLimit, "Players": {"1": PlayerID}}}'''
+        Vraci: {"Type": "LobbyJoin", "Data": {"NumberOfRounds": noOfRounds, "TimeLimit": timeLimit, "Players": {"1": PlayerID}, "Map : {Name, ID, obstaces : {list}}"}}'''
         game = createGame(connection)
         response = {}
         response['Type'] = "LobbyJoin"
@@ -278,10 +293,26 @@ def processMessage(connection, obj):
                     "MaxBombs": p.getMaxBomb()
                 }
             })
+        obstacles = []
+        for o in game.getMap().getObstacles():
+            obstacles.append({
+                'Type' : 'Obstacle',
+                'Collision' : True,
+                'Destroyable' : False,
+                'Background' : False,
+                'PosX' : o.getPosition().getX(),
+                'PosY' : o.getPosition().getY()
+            })
+        mapa = {
+            "ID" : game.getMap().getID(),
+            "Name" : game.getMap().getID(),
+            "Obstacles" : obstacles
+        }
         data = {
             "ID": game.getID(), 
             "NumberOfRounds" : game.getNoOfRounds(), 
-            "TimeLimit" : game.getTimeLimit(), 
+            "TimeLimit" : game.getTimeLimit(),
+            "Map" : mapa, 
             "Players" : players,
             "YourID" : p.getID()
         }
@@ -311,9 +342,8 @@ def processMessage(connection, obj):
     elif (obj['Type'] == "LeaveLobby"):
         '''Zavola odstraneni hrace z hry a opet se prihlasi k odebirani lobby listu
         ocekava ocekava: {Type : "LeaveLobby"}'''
-        removePlayerFromGame(connection)
+        removePlayerFromGame(Connections[connection])
         return {"Type": "LobbyLeave"}
-        #subscribeToLobyList()
     
     elif (obj['Type'] == "StartGame"):
         '''Spusti spousteni hry
@@ -359,24 +389,25 @@ def notifyGameMembers(gameID):
 
 def notifyAboutPlayer(gameId, player, event_type):
     """Upozorni ostatni cleny hry o hraci (join/leave)"""
-    for conn in Connections.keys():
-        if (Connections[conn] in Games[gameId].players and (Connections[conn] != Players[player.getID()] or event_type != "PlayerJoin")):
-            message = {}
-            message['Type'] = event_type
-            data = {
-                "ID": player.getID(),
-                "Nick": player.getNick(),
-                "Character": {
-                    "ID": player.getAppearance(),
-                    "Name": player.getCharacterName(),
-                    "Speed": player.getSpeed(),
-                    "Power": player.getPower(),
-                    "MaxLives": player.getMaxLife(),
-                    "MaxBombs": player.getMaxBomb()
+    if len(Games[gameId].getPlayers()) != 0:
+        for conn in Connections.keys():
+            if (Connections[conn] in Games[gameId].players and (Connections[conn] != Players[player.getID()] or event_type != "PlayerJoin")):
+                message = {}
+                message['Type'] = event_type
+                data = {
+                    "ID": player.getID(),
+                    "Nick": player.getNick(),
+                    "Character": {
+                        "ID": player.getAppearance(),
+                        "Name": player.getCharacterName(),
+                        "Speed": player.getSpeed(),
+                        "Power": player.getPower(),
+                        "MaxLives": player.getMaxLife(),
+                        "MaxBombs": player.getMaxBomb()
+                    }
                 }
-            }
-            message['Data'] = data
-            conn.notify(message)
+                message['Data'] = data
+                conn.notify(message)
 
 def notifySubscribed(change):
     '''Upozorni hrace odebirajici LobbyList o zmene
@@ -454,6 +485,8 @@ def checkGame(game):
         notifySubscribed(Change("LobbyListItemRemove", game))
     else:
         notifySubscribed(Change("LobbyListItemChange", game))
+        
+
 
 def endOfRound(game):
     response = {

@@ -9,7 +9,7 @@ from backend.modules.position import Position
 
 class Obstacle(Position):
     def __init__(self, x: int = 0, y: int = 0):
-        self.position = Position.__init__(self, x, y)
+        self.position = Position(x, y)
     
     def getPosition(self):
         return self.position

@@ -19,7 +19,8 @@ class Game extends React.Component<RouteComponentProps, GameState>{
         Players: [],
         YourID: 0,
         ID: 0,
-        NumberOfRounds: 0
+        NumberOfRounds: 0,
+        Map: {ID: "", Objects: [], Name: ""}
     }
 
     componentDidMount(){
@@ -79,9 +80,9 @@ class Game extends React.Component<RouteComponentProps, GameState>{
                     <HealthBar heartsLeft={3}/>
                     <Bomb bombsLeft={3}/>
                 </section>
-            </section>   
+            </section>
         );
-    }    
+    }
 
     render(){
         return(
@@ -90,15 +91,15 @@ class Game extends React.Component<RouteComponentProps, GameState>{
 
             <div className = 'Bar'>
 
-            { this.renderSelf() }                
+            { this.renderSelf() }
 
                 <section className="Countdown">
                     <Countdown date={Date.now() + this.state.TimeLimit * 1000}/>
                 </section>
 
-                
+
                 { this.renderOpponents() }
-                
+
             </div>
         </div>
         );}
