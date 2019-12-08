@@ -5,5 +5,4 @@ export interface Player{
   Nick: string;
   Character: Character;
   RemainingLives?: number;
-  RemainingBombs?: number;
 }
