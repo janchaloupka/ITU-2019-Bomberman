@@ -7,15 +7,22 @@
 
 from typing import List
 from backend.modules.obstacle import Obstacle
+import json
 
 class Map:
     width: int = 21
     height: int = 21
     
-    def __init__(self, background, name):
-        self.background = background
+    def __init__(self, name):
+        with open('../maps/Map1.txt') as outfile:
+            data = json.load(outfile)
+            for m in data:
+                if m['Name'] == name:
+                    self.name = m['Name']
+                    self.background = m['Background']
+                    
         self.obstacles: List[Obstacle] = []
-        self.name = name
+        
 
     def generateObstacles(self):
         '''Dle typu mapy vytvori prekazky'''
@@ -36,10 +43,3 @@ class Map:
 
     def getName(self) -> str:
         return self.name
-
-
-mockMap = {
-    "Map1" : Map (None, "Map1"),
-    "Map2" : Map (None, "Map2"),
-    "Map3" : Map (None, "Map3")
-}

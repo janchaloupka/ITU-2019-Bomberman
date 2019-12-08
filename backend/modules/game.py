@@ -20,7 +20,7 @@ class Game:
         self.timeLimit = 60
         self.noOfRounds = 1
         self.currentRound = 0
-        self.map: Map = mockMap["Map1"]
+        self.map: Map = Map("Map1")
         self.players: List[Player] = []
         self.barrels: List[Barrel] = []
         self.bombs: List[Bomb] = []
