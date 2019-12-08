@@ -6,7 +6,6 @@ import { API } from "../logic/API";
 import { ServerEventType } from "../enums/ServerEventType";
 import { ClientEventType } from "../enums/ClientEventType";
 import { LobbyListItem as LobbyListItemModel } from "../models/LobbyListItem";
-import { runInThisContext } from "vm";
 
 interface LobbyListState{
   items: LobbyListItemModel[];
@@ -17,15 +16,22 @@ class LobbyList extends React.Component<RouteComponentProps>{
     items: []
   }
 
-  ListItemNew(item: LobbyListItemModel){
-    if(!item.PlayerCount) return;
-
-    let newItemsState = [...this.state.items, item];
-    this.setState({items: newItemsState});
+  ListItemNew(item: LobbyListItemModel | LobbyListItemModel[]){
+    if(Array.isArray(item)){
+      let newItemsState = [...this.state.items, ...item];
+      this.setState({items: newItemsState});
+    }else if(item.PlayerCount){
+      let newItemsState = [...this.state.items, item];
+      this.setState({items: newItemsState});
+    }
   }
 
   ListItemChange(item: LobbyListItemModel){
-    // TODO
+    if(!item.PlayerCount) return;
+
+    let newItemsState = this.state.items.map((val) => val.ID === item.ID ? item : val);
+    console.log(newItemsState);
+    this.setState({items: newItemsState});
   }
 
   ListItemRemove(item: LobbyListItemModel){
@@ -73,6 +79,8 @@ class LobbyList extends React.Component<RouteComponentProps>{
   }
 
   render(){
+    let items = this.renderItems();
+
     return (
       <div className="LobbyList">
         <div className="ScreenContent">
@@ -80,8 +88,8 @@ class LobbyList extends React.Component<RouteComponentProps>{
             <h2>Dostupné hry</h2>
           </header>
           <section className="list">
-            <LobbyListItem id="new" host="+ Založit novou místnost"/>
-            {this.renderItems()}
+            <LobbyListItem id="new" host="+ Založit novou hru"/>
+            {items.length > 0 ? items : (<p>Nejsou k dispozici žádné otevřené hry :(<br/>Můžete vytvořit novou hru kliknutím na tlačítko výše.</p>)}
           </section>
         </div>
       </div>

@@ -11,6 +11,13 @@ interface LobbyListItemProps{
 
 class LobbyListItem extends React.Component<LobbyListItemProps>{
   render(){
+    if(this.props.connected && this.props.connected >= 4) return (
+    <div className="LobbyListItem Disabled">
+      <div className="Host">{this.props.host}</div>
+      <div className="Map">{this.props.map}</div>
+      {this.props.connected != null && (<div className="Connected">{this.props.connected}</div>) }
+    </div>);
+
     return(
     <Link to={"/" + this.props.id} className="LobbyListItem">
       <div className="Host">{this.props.host}</div>

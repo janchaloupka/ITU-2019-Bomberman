@@ -13,9 +13,28 @@
   margin: 8px;
   text-decoration: none;
 
+  @keyframes show {
+    0%{transform-origin: top; transform: rotateX(40deg); opacity: 0;}
+    100%{transform-origin: top; transform: none; opacity: 1;}
+  }
+
+  animation: 500ms show 1;
+
   &:active{
     transform: scale(0.99);
     box-shadow: none;
+  }
+
+  &:hover{
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  &.Disabled{
+    opacity: 0.2;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    background: transparent;
   }
 
   .Host{
