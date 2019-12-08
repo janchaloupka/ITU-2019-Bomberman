@@ -1,15 +1,20 @@
 ITU projekt 2019
 Bomberman
 ================
+Jan Chaloupka <xchalo16>
+Tomáš Plachý <xplach08>
+Michal Krůl <xkrulm00>
 
-Popis sestavení
+
+Serverová část: /backend
+Klientská část: /frontend
 
 ===============
 SERVEROVÁ ČÁST
 ===============
 Server běží v jazyce Python
 
-Předpokládaá verze je Python 3.7.1
+Předpokládaná verze je Python 3.7.1
 Pro správné spuštění musí být nastavena environmentální proměná PYTHONPATH na directory projektu
 
 Python vestavěné knihovny použité v Server:
@@ -20,3 +25,14 @@ Python vestavěné knihovny použité v Server:
     twisted     https://twistedmatrix.com/trac/wiki/Documentation
 
 Jejich instalaci, pokud nejsou dostupné, je možné provést přes nástroj pip (pip install [název_knihovny])
+
+===============
+KLIENTSKÁ ČÁST
+===============
+Klient je webová aplikace psaná v jazyku TypeScript a frameworku React
+
+Pro sestavení a spuštění je třeba mít nainstalované NPM a NodeJS v poslední verzi
+NodeJS: https://nodejs.org/en/
+
+Pro nainstalování závislostí v adresáři frontend/ spusťte příkaz: npm install
+Pro spuštění vývojového serveru Reactu je příkaz: npm start
