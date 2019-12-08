@@ -153,6 +153,8 @@ def startGame(data):
         'Type' : "GameStart",
         'Data' : data
     }
+    game_timer = Timer(game.getTimeLimit(), endOfRound, [game])
+    game_timer.start()
     return response
 
 def addToLobby(player, data):
@@ -424,3 +426,18 @@ def checkGame(game):
         notifySubscribed(Change("LobbyListItemRemove", game))
     else:
         notifySubscribed(Change("LobbyListItemChange", game))
+
+def endOfRound(game):
+    response = {
+        'Type' : 'GameEnd',
+        'Data' : {
+            'Round' : game.getCurrentRound()
+        }
+    }
+    for p in game.getPlayers():
+        for conn in Connections.keys:
+            if p == Connections[conn]:
+                conn.notify(response)
+    if not game.getCurrentRound == game.getNoOfRounds:
+        game_timer = Timer(game.getTimeLimit(), endOfRound, [game])
+        game_timer.start()

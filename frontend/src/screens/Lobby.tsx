@@ -8,6 +8,7 @@ import { ClientEventType } from "../enums/ClientEventType";
 import { GameManager } from "../logic/GameManager";
 import { Lobby as LobbyModel } from "../models/Lobby";
 import { ServerEventType } from "../enums/ServerEventType";
+import { Link } from "react-router-dom";
 
 interface LobbyState extends LobbyModel{
   InviteCopied: boolean;
@@ -144,7 +145,7 @@ class Lobby extends React.Component<RouteComponentProps, LobbyState>{
               onClick={() => this.copyInvitation()}
             >Zkopírovat pozvánku</button>
             <button className="Secondary" onClick={() => this.leaveLobby()}>Odejít</button>
-            <button>Spustit hru</button>
+            <Link to={(this.props.match.params as {id: string}).id + "/game"} className="Button">Spustit hru</Link>
           </footer>
         </div>
       </div>
