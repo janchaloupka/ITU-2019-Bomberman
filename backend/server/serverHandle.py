@@ -191,6 +191,7 @@ def addToLobby(player, data):
         "ID": game.getID(), 
         "NumberOfRounds" : game.getNoOfRounds(), 
         "TimeLimit" : game.getTimeLimit(), 
+        "Map" : game.getMap().getName()
         "Players" : players,
         "YourID" : Connections[player].getID()
     }
