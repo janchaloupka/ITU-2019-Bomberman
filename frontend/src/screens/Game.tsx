@@ -24,8 +24,29 @@ class Game extends React.Component<RouteComponentProps, GameState>{
     }
 
     componentDidMount(){
-      if(!GameManager.CurrentLobby) return;
-      this.setState(GameManager.CurrentLobby);
+        if(!GameManager.CurrentLobby) return;
+        this.setState({
+            ID: GameManager.CurrentLobby.ID,
+            NumberOfRounds: GameManager.CurrentLobby.NumberOfRounds,
+            TimeLimit: GameManager.CurrentLobby.TimeLimit,
+            YourID: GameManager.CurrentLobby.YourID,
+            Players: GameManager.CurrentLobby.Players,
+            Map: GameManager.CurrentLobby.Map
+          });
+
+          console.log("Game mounte begun");
+          console.log(this.state.Players);
+
+        let updatedPlayers = this.state.Players;
+        for (let i = 0; i < this.state.Players.length; i++){          
+            updatedPlayers[i].RemainingLives = this.state.Players[i].Character.MaxLives + 3;
+            updatedPlayers[i].RemainingBombs = this.state.Players[i].Character.MaxBombs + 3;
+        }
+        this.setState({
+            Players: updatedPlayers
+        });
+        console.log("Game mounted");
+        console.log(this.state.Players);
     }
 
     renderOpponents(){
@@ -33,8 +54,16 @@ class Game extends React.Component<RouteComponentProps, GameState>{
         if(players.length === 0) return <p>Čeká se na hráče...<br/>Adresa pro připojení: <b>{window.location.host}{window.location.pathname}</b></p>;
 
         return players.map((p) => {
-          let i = this.state.Players.indexOf(p);
-          return (<section className="OtherPlayers"><PlayerAvatar key={p.ID} name={p.Nick} character={p.Character.ID} color={100*i} /> <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" /></section>)
+            let i = this.state.Players.indexOf(p);
+            if (!p.RemainingLives){
+                console.log("Lives not set");
+                return <></>;
+            }
+            return (
+                <section className="OtherPlayers">
+                    <PlayerAvatar key={p.ID} name={p.Nick} character={p.Character.ID} color={100*i} />
+                    <HealthBar heartsLeft={p.RemainingLives}/>
+                </section>) 
         });
     }
 
@@ -42,12 +71,13 @@ class Game extends React.Component<RouteComponentProps, GameState>{
         let player = this.state.Players.find((p) => p.ID === this.state.YourID);
         if(!player) return;
         let i = this.state.Players.indexOf(player);
-
+        if(!player.RemainingLives)
+            player.RemainingLives = 3;//TODO fix
         return(
             <section className="CurrentPlayer">
                 <PlayerAvatar key={player.ID} name={player.Nick} character={player.Character.ID} color={100*i}/>
                 <section className="Attributes">
-                    <HealthBar heart1="red_heart" heart2="red_heart" heart3="gray_heart" />
+                    <HealthBar heartsLeft={3}/>
                     <Bomb bombsLeft={3}/>
                 </section>
             </section>

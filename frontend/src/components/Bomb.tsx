@@ -7,11 +7,11 @@ interface BombProps{
 
 class Bomb extends React.Component<BombProps>{
     renderBombs = () => {
-    let bombs = [];
-    for (let i = 0; i < this.props.bombsLeft; i++){
-        bombs.push(<div className="Bomb" key = {i}/>);
-    }
-    console.log(bombs);
+        let bombs = [];
+        for (let i = 0; i < this.props.bombsLeft; i++){
+            bombs.push(<div className="Bomb" key = {i}/>);
+        }
+        console.log(bombs);
         return bombs;
     }
 

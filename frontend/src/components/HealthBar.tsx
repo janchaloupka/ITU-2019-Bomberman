@@ -2,21 +2,27 @@ import React from "react";
 import "./HealthBar.scss";
 
 interface HealthBarProps{
-  heart1: string;
-  heart2: string;
-  heart3: string;
+  heartsLeft: number;
 }
 
+
+
 class HealthBar extends React.Component<HealthBarProps>{
-  render(){
-    return (
-        <div>
-        <div className={this.props.heart1}></div>
-        <div className={this.props.heart2}></div>
-        <div className={this.props.heart3}></div>
-        </div>
-    );
-  }
+    renderHearts = () => {
+        let hearts = [];
+        for (let i = 0; i < this.props.heartsLeft; i++){
+            hearts.push(<div className="red_heart"></div>);
+        }
+        console.log(hearts);
+        return hearts;
+    }
+    render(){
+        return (
+            <div>
+            {this.renderHearts()}
+            </div>
+        );
+    }
 }
 
 export default HealthBar;
