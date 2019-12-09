@@ -28,6 +28,13 @@
     }
   }
 
+  &.Small{
+    .Avatar{
+      width: 64px;
+      height: 64px;
+    }
+  }
+
   /*@media(max-width: 1300px), (max-height: 900px){
     .Avatar{
       transform: none;

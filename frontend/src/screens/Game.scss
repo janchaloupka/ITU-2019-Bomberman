@@ -11,28 +11,59 @@
     grid-template-rows: auto max-content;
   }
 
-  .GameArea{
+  .Map{
     image-rendering: pixelated;
-    background-image: url('../assets/IceMap.png');
+    background: black;
     background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
     position: relative;
     margin: -24px;
     margin-bottom: 0;
-  }
-}
 
-.Bar {
+    &.Overworld{
+      background-image: url("../assets/Overworld.png");
+    }
+
+    &.IceMap{
+      background-image: url("../assets/IceMap.png");
+    }
+
+    &.FootballPitch{
+      background-image: url("../assets/FootballPitch.png");
+    }
+
+    &:before, &:after{
+      content: '';
+      position: absolute;
+      left: 60px;
+      bottom: 85px;
+      width: 56px;
+      height: 56px;
+      background: url("../assets/player_regular.png");
+      background-size: 100% 100%;
+      filter: hue-rotate(100deg);
+    }
+
+    &:after{
+      left: auto;
+      right: 56px;
+      bottom: auto;
+      top: 87px;
+      filter: none;
+    }
+  }
+
+  .Bar {
     display: grid;
     grid-template-columns: 33% 33% 33%;
     grid-template-rows: auto;
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    height: 15%;
-    background-color: azure;
-}
+    margin: -24px;
+    margin-top: 0;
+    padding: 24px;
+  }
 
-.CurrentPlayer{
+  .CurrentPlayer{
     grid-row: 1;
     grid-column: 1;
     display: grid;
@@ -43,36 +74,39 @@
       grid-column: 1;
       align-self: center;
     }
+
     .Attributes{
-        grid-row: 1;
-        grid-column: 2;
-        display: grid;
-        grid-template-columns: max-content max-content;
-        grid-template-rows: auto;
-        justify-items: end;
-        padding-right: 10px;
+      grid-row: 1;
+      grid-column: 2;
+      display: grid;
+      grid-template-columns: max-content max-content;
+      grid-template-rows: auto;
+      justify-items: end;
+      padding-right: 10px;
     }
   }
 
-.OtherPlayers{
+  .OtherPlayers{
     grid-row: 1;
     grid-column: 3;
     display: grid;
     grid-template-columns: repeat(2, max-content);
     grid-template-rows: auto;
-    justify-items: end;
+    justify-content: end;
     padding-right: 10px;
 
     .PlayerAvatar{
-        align-self: center;
+      align-self: center;
     }
-}
+  }
 
-.Countdown {
+  .Countdown {
     font-family: 'Press Start 2P', cursive;
-    font-size: 190%;
+    font-size: 32px;
     grid-row: 1;
     grid-column: 2;
     justify-self: center;
     align-self: center;
+  }
 }
+

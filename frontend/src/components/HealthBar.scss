@@ -3,15 +3,17 @@
     height: 18px;
     background-size: 18px 18px;
     background-image: url(../assets/red_heart.png);
-    margin-right: 100px;
+    margin-right: 24px;
     margin-top: 10px;
-}
+    image-rendering: pixelated;
+  }
 
-.gray_heart{
+  .gray_heart{
     width: 18px;
     height: 18px;
     background-size: 18px 18px;
     background-image: url(../assets/gray_heart.png);
-    margin-right: 100px;
+    margin-right: 24px;
     margin-top: 10px;
+    image-rendering: pixelated;
 }
